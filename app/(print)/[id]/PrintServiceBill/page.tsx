@@ -13,7 +13,7 @@ async function getPatientData(id: string) {
 
 function groupByDate(items: any[]) {
   return items.reduce((acc, item) => {
-    const date = format(new Date(item.created_at), "yyyy-MM-dd");
+    const date = format(new Date(item.service_date), "yyyy-MM-dd");
     if (!acc[date]) {
       acc[date] = [];
     }
@@ -53,7 +53,7 @@ export default async function PrintServiceBill({ params }: { params: { id: strin
                   <tr className="bg-gray-100">
                     <th className="border border-gray-300 px-4 py-2">Service Name</th>
                     <th className="border border-gray-300 px-4 py-2">Quantity</th>
-                    <th className="border border-gray-300 px-4 py-2">Price</th>
+                    {/* <th className="border border-gray-300 px-4 py-2">Price</th> */}
                     <th className="border border-gray-300 px-4 py-2">Total</th>
                   </tr>
                 </thead>
@@ -64,7 +64,7 @@ export default async function PrintServiceBill({ params }: { params: { id: strin
                       <tr key={service.service_id}>
                         <td className="border border-gray-300 px-4 py-2">{service.service_name}</td>
                         <td className="border border-gray-300 px-4 py-2">{service.quantity}</td>
-                        <td className="border border-gray-300 px-4 py-2">${Number(service.cost).toFixed(2)}</td>
+                        {/* <td className="border border-gray-300 px-4 py-2">${Number(service.cost).toFixed(2)}</td> */}
                         <td className="border border-gray-300 px-4 py-2">${Number(service.total_cost).toFixed(2)}</td>
                       </tr>
                     );

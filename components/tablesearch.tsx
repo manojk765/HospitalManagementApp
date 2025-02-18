@@ -27,7 +27,7 @@ const TableSearch = () => {
       <CiSearch width={24} height={24} />
       <input
         type="text"
-        placeholder="Search medicines..."
+        placeholder="Search ..."
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         className="w-[200px] p-2 bg-transparent outline-none"

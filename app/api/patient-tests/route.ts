@@ -1,27 +1,24 @@
-import { NextResponse } from 'next/server';
-import prisma  from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    const body = await request.json();
-    const { test_name, result_description, patient_id, doctor_id } = body;
-
-    const test = await prisma.patientTests.create({
-      data: {
-        test_name,
-        result_description,
-        patient_id,
-        doctor_id,
-        test_date: new Date(),
-        is_paid: false,
+    const tests = await prisma.labTest.findMany({
+      select: {
+        test_name: true,
+        cost: true,
+        description: true
       },
+      orderBy: {
+        test_name: 'asc'
+      } 
     });
 
-    return NextResponse.json(test);
+    return NextResponse.json(tests);
   } catch (error) {
-    console.error('Error creating test:', error);
+    console.error("Error fetching services:", error);
     return NextResponse.json(
-      { error: 'Failed to create test' },
+      { error: "Failed to fetch services" },
       { status: 500 }
     );
   }

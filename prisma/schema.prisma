@@ -1,14 +1,17 @@
+// Prisma generator for client
 generator client {
   provider = "prisma-client-js"
 }
 
+// MySQL database configuration
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+// Manufacturer model
 model Manufacturer {
-  vendor_pharm_name String   @id @unique  
+  vendor_pharm_name String   @id @unique
   vendor_name       String
   contact_number    String    @db.VarChar(10)
   email             String?   @unique
@@ -18,71 +21,94 @@ model Manufacturer {
   zip_code          String?   @db.VarChar(10)
   created_at        DateTime  @default(now())
   updated_at        DateTime  @updatedAt
-  
-  medicines         Medicine[] 
-}
 
+  medicines         Medicine[]
+}
+ 
+// Medicine model
 model Medicine {
-  medicine_id      Int         @id @default(autoincrement())
-  medicine_name    String
-  stock_quantity   Int
-  price_per_unit   Decimal     @db.Decimal(10, 2)
-  unit_quantity    Decimal     @db.Decimal(10, 2)
-  batch_number     String
-  // balance 
-  expiry_date      DateTime
-  manufacturer_name  String     
-  manufacturer     Manufacturer @relation(fields: [manufacturer_name], references: [vendor_pharm_name]) 
-  
-  @@unique([medicine_name, manufacturer_name]) 
+  medicine_id        Int         @id @default(autoincrement())
+  medicine_name      String
+  stock_quantity     Int
+  price_per_unit     Decimal     @db.Decimal(10, 2)
+  unit_quantity      Decimal     @db.Decimal(10, 2)
+  batch_number       String
+  expiry_date        DateTime
+  manufacturer_name  String
+  manufacturer       Manufacturer @relation(fields: [manufacturer_name], references: [vendor_pharm_name])
+
+  @@unique([medicine_name, manufacturer_name])
 }
 
+// Department model
 model Department {
-  department_name    String     @id @db.VarChar(100)
-  head_of_department String?    @db.VarChar(100)
-  
+  department_name    String  @id @db.VarChar(100)
+  head_of_department String? @db.VarChar(100)
+
   doctors            Doctor[]
   staff              Staff[]
 }
 
+// Doctor model
 model Doctor {
-  doctor_id         Int        @id @default(autoincrement())
-  name              String     @db.VarChar(100)
-  specialty         String     @db.VarChar(100)
-  contact_number    String     @db.VarChar(15)
-  email             String     @db.VarChar(100)
+  doctor_id         String  @id @db.VarChar(15)
+  name              String  @db.VarChar(100)
+  specialty         String  @db.VarChar(100)
+  contact_number    String  @db.VarChar(15)
+  email             String  @db.VarChar(100)
   experience_years  Int
-  department_name   String 
+  department_name   String
 
   department        Department @relation(fields: [department_name], references: [department_name])
   
-  prescriptions    Prescription[]  
-  tests            PatientTests[]
+  prescriptions     Prescription[]
+  patients          PatientDoctor[]
 }
 
+// Staff model
 model Staff {
-  staff_id         Int        @id @default(autoincrement())
-  name             String     @db.VarChar(100)
-  role             String     @db.VarChar(100) 
-  contact_number   String     @db.VarChar(10)
-  email            String     @db.VarChar(100)
-  shift_time       String     @db.VarChar(100) 
+  staff_id         String  @id @db.VarChar(15)
+  name             String  @db.VarChar(100)
+  role             String  @db.VarChar(100)
+  contact_number   String  @db.VarChar(10)
+  email            String  @db.VarChar(100)
+  shift_time       String  @db.VarChar(100)
   department_name  String
-  salary           Decimal    @db.Decimal(10, 2)
+  salary           Decimal @db.Decimal(10, 2)
+
   department       Department @relation(fields: [department_name], references: [department_name])
 }
 
+// LabTest model
 model LabTest {
   test_name   String  @id @db.VarChar(100)
   cost        Decimal @db.Decimal(10, 2)
   description String  @db.Text
 
-  tests            PatientTests[]
+  tests       PatientTests[]
 }
 
+// Services model
+model Services {
+  service_name String  @id @db.VarChar(100)
+  cost         Decimal  @db.Decimal(10, 2)
+  description  String   @db.Text
 
+  services     PatientService[]
+}
+
+// Surgery model
+model Surgery {
+  surgery_name String  @id @db.VarChar(100)
+  cost         Decimal  @db.Decimal(10, 2)
+  description  String   @db.Text
+
+  surgery      PatientSurgery[]
+}
+
+// Patient model
 model Patient {
-  patient_id       String          @id @db.VarChar(15) 
+  patient_id       String          @id @db.VarChar(15)
   name             String          @db.VarChar(100)
   gender           Gender
   date_of_birth    DateTime
@@ -96,73 +122,163 @@ model Patient {
   registration_date DateTime       @default(now())
   category         Category
 
-  prescriptions    Prescription[]  // Relation to Prescription model
-  tests            PatientTests[]  // Relation to PatientTests model
-  services         PatientService[] // Relation to PatientService model
+  prescriptions    Prescription[]
+  tests            PatientTests[]
+  services         PatientService[]
+  surgery          PatientSurgery[]
+  doctors          PatientDoctor[]
+  Admission        Admission[]
+  PatientAdmissionFee PatientAdmissionFee[]
+  Birth            Birth[]
 }
 
+// Prescription model
+model Prescription {
+  prescription_id   Int      @id @default(autoincrement())
+  patient_id        String   @db.VarChar(15)
+  doctor_id         String   @db.VarChar(15)
+  prescription_date DateTime @default(now())
+  medicine_name     String   @db.VarChar(100)
+  dosage            String   @db.VarChar(100)
+  duration          String   @db.VarChar(50)
+  duration_type     String   @db.VarChar(50)
+  is_paid           Boolean  @default(false)
+
+  patient           Patient  @relation(fields: [patient_id], references: [patient_id])
+  doctor            Doctor   @relation(fields: [doctor_id], references: [doctor_id])
+}
+
+// PatientDoctor model (junction table for patients and doctors)
+model PatientDoctor {
+  patient_id    String   @db.VarChar(15)
+  doctor_id     String   @db.VarChar(15)
+
+  patient       Patient  @relation(fields: [patient_id], references: [patient_id])
+  doctor        Doctor   @relation(fields: [doctor_id], references: [doctor_id])
+
+  @@id([patient_id, doctor_id])
+}
+
+// PatientService model (junction table for patients and services)
+model PatientService {
+  patient_id    String    @db.VarChar(15)
+  service_name  String    @db.VarChar(100)
+  service_date  DateTime
+  quantity      Int
+  total_cost    Decimal   @db.Decimal(10, 2)
+  is_paid       Boolean   @default(false)
+
+  patient       Patient   @relation(fields: [patient_id], references: [patient_id])
+  service       Services  @relation(fields: [service_name], references: [service_name])
+
+  @@id([patient_id, service_name, service_date])
+}
+
+// PatientTests model (junction table for patients and lab tests)
+model PatientTests {
+  patient_id         String   @db.VarChar(15)
+  test_name          String   @db.VarChar(100)
+  test_date          DateTime @default(now())
+  quantity           Int      @default(1)
+  total_cost         Decimal  @db.Decimal(10, 2) @default(0)
+  result_description String   @db.Text
+  is_paid            Boolean  @default(false)
+
+  patient            Patient  @relation(fields: [patient_id], references: [patient_id])
+  labTest            LabTest  @relation(fields: [test_name], references: [test_name])
+
+  @@id([patient_id, test_name, test_date])
+}
+
+// PatientSurgery model (junction table for patients and surgeries)
+model PatientSurgery {
+  patient_id          String   @db.VarChar(15)
+  surgery_name        String   @db.VarChar(100)
+  surgery_date        DateTime
+  quantity            Int      @default(1)
+  total_cost          Decimal  @db.Decimal(10, 2) @default(0)
+  surgery_description String   @db.Text
+  is_paid             Boolean  @default(false)
+
+  patient   Patient  @relation(fields: [patient_id], references: [patient_id])
+  surgery   Surgery  @relation(fields: [surgery_name], references: [surgery_name])
+
+  @@id([patient_id, surgery_name, surgery_date])
+}
+
+// Beds model
+model Beds {
+  id          Int      @id @default(autoincrement())
+  type        RoomType
+  bedNumber   String   @db.VarChar(10)
+  dailyRate   Decimal  @db.Decimal(10, 2)
+  available   Boolean  @default(true)
+
+  @@unique([type, bedNumber])
+
+  Admission Admission[]
+  PatientAdmissionFee PatientAdmissionFee[]
+}
+
+// RoomType enum
+enum RoomType {
+  GeneralWard
+  SemiPrivate
+  Private
+  ICU
+}
+
+// Admission model
+model Admission {
+  patient_id    String  @db.VarChar(15)
+  room_id       Int
+  admittedDate  DateTime
+  dischargeDate DateTime?
+
+  @@id([patient_id, room_id, admittedDate])
+
+  patient   Patient @relation(fields: [patient_id], references: [patient_id])
+  bed       Beds    @relation(fields: [room_id], references: [id])
+}
+
+// PatientAdmissionFee model
+model PatientAdmissionFee {
+  patient_id    String  @db.VarChar(15)
+  room_id       Int
+  admittedDate  DateTime
+  dischargeDate DateTime
+  totalDays     Int
+  totalCost     Decimal  @db.Decimal(10, 2)
+
+  @@id([patient_id, room_id, admittedDate])
+
+  patient   Patient @relation(fields: [patient_id], references: [patient_id])
+  bed       Beds    @relation(fields: [room_id], references: [id])
+}
+
+// Birth model
+model Birth {
+  birth_id       String   @db.VarChar(15) @id
+  patient_id     String   @db.VarChar(15)
+  name           String   @db.VarChar(100)
+  fatherName     String   @db.VarChar(100)
+  gender         Gender
+  date           DateTime
+  typeofDelivery String   @db.VarChar(20)
+
+  patient        Patient  @relation(fields: [patient_id], references: [patient_id])
+}
+
+// Gender enum
 enum Gender {
   Male
   Female
   Other
 }
 
+// Category enum
 enum Category {
   Gynecology
   IVF
   Other
-}
-
-model PatientService {
-  service_id    Int       @id @default(autoincrement())  
-  patient_id    String    @db.VarChar(15)                
-  service_name  String    @db.VarChar(100)               
-  service_type  ServiceType                              
-  cost          Decimal   @db.Decimal(10, 2)            
-  quantity      Int                                      
-  total_cost    Decimal   @db.Decimal(10, 2)             
-  created_at    DateTime  @default(now())                
-
-  patient    Patient   @relation(fields: [patient_id], references: [patient_id]) 
-
-  @@index([patient_id]) 
-}
-
-enum ServiceType {
-  Hospital
-  Consultation
-  Surgery
-  Diagnostic
-  Therapy
-  Medication
-  Other
-}
-
-model Prescription {
-  prescription_id   Int      @id @default(autoincrement())
-  patient_id        String   @db.VarChar(15)
-  doctor_id         Int
-  prescription_date DateTime @default(now()) // This will store the current date and time
-  medicine_name     String   @db.VarChar(100)
-  dosage            String   @db.VarChar(100)
-  duration          String   @db.VarChar(50)
-  duration_type     String   @db.VarChar(50) // Days, Weeks
-  is_paid           Boolean  @default(false)
-
-  patient           Patient  @relation(fields: [patient_id], references: [patient_id])   
-  doctor            Doctor   @relation(fields: [doctor_id], references: [doctor_id])
-}
-
-model PatientTests {
-  result_id          Int      @id @default(autoincrement())
-  patient_id         String   @db.VarChar(15)
-  test_name          String   @db.VarChar(100)
-  test_date          DateTime @default(now()) 
-  result_description String   @db.Text
-  doctor_id          Int
-  is_paid            Boolean  @default(false)
-
-  patient            Patient  @relation(fields: [patient_id], references: [patient_id]) 
-  doctor             Doctor   @relation(fields: [doctor_id], references: [doctor_id])
-  labTest            LabTest  @relation(fields: [test_name], references: [test_name])
 }

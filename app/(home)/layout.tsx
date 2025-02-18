@@ -1,5 +1,6 @@
 import './globals.css'
 import SideNav  from '@/components/side-nav'
+import { ClerkProvider } from '@clerk/nextjs'
 
 export const metadata = {
     title: 'Hospital Dashboard',
@@ -12,13 +13,15 @@ export default function RootLayout({
     children: React.ReactNode
   }) {
     return (
-      <html lang="en">
-        <SideNav/>
-        <body>
-          <main className='ml-64 p-4'>
-            {children}
-          </main>
-        </body>
-      </html>
+      <ClerkProvider>
+          <html lang="en">
+            <SideNav/>
+            <body>
+              <main className='ml-64 p-4'>
+                {children}
+              </main>
+            </body>
+          </html>
+      </ClerkProvider>
     )
   }

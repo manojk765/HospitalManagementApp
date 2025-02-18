@@ -1,6 +1,27 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
+export async function GET() {
+  try {
+    const patients = await prisma.patient.findMany({
+      select: {
+        patient_id: true,
+        name: true,
+        email: true
+      }, 
+       orderBy: { patient_id : 'desc' },
+      });
+
+      return NextResponse.json(patients);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      return NextResponse.json(
+        { error: "Failed to fetch services" },
+        { status: 500 }
+      );
+    }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
