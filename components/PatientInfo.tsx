@@ -1,7 +1,34 @@
-import type { Doctor, Patient } from "@prisma/client" 
-import Link from "next/link"
+import prisma from "@/lib/prisma";
 
-export default function PatientInfo({ patient , doctor }: { patient: Patient , doctor: Doctor | null}) {
+async function getPatientData(id: string) {
+  const patient = await prisma.patient.findUnique({
+    where: { patient_id: id },
+    include: {
+      doctors: true,
+    },
+  });
+  return patient;
+}
+
+async function getDoctorData(id: string) {
+  const doctor = await prisma.doctor.findUnique({
+    where: { doctor_id: id },
+  });
+  return doctor;
+}
+
+export default async function PatientInfo({ patientId }: { patientId: string }) {
+  const patient = await getPatientData(patientId);
+  const doctor = patient?.doctors[0] ? await getDoctorData(patient.doctors[0].doctor_id) : null;
+
+  if (!patient) {
+    return (
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <p className="text-red-500">Patient not found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-semibold mb-4">Patient Information</h2>
@@ -40,37 +67,44 @@ export default function PatientInfo({ patient , doctor }: { patient: Patient , d
           <p>{patient.category}</p>
         </div>
       </div>
+
       <div className="mt-4">
         <p className="font-semibold">Address:</p>
         <p>{`${patient.address || ""}, ${patient.city || ""}, ${patient.state || ""} ${patient.zip_code || ""}`}</p>
       </div>
 
-
-      {
-        doctor ?  (
-          <div className="mt-4">
-
-            <p className="font-semibold">Doctor details:</p>
-            <p>{doctor.doctor_id}</p>
-
-            <p>{doctor.name}</p>
-
-            <p>{doctor.contact_number}</p>
-
-            <p>{doctor.email || "N/A"}</p>
-          
-           <p>{doctor.specialty}</p>
-
+      {doctor ? (
+        <div className="mt-4">
+          <p className="font-semibold">Doctor details:</p>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <p className="font-semibold">Doctor ID:</p>
+              <p>{doctor.doctor_id}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Name:</p>
+              <p>{doctor.name}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Contact:</p>
+              <p>{doctor.contact_number}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Email:</p>
+              <p>{doctor.email || "N/A"}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Specialty:</p>
+              <p>{doctor.specialty}</p>
+            </div>
           </div>
-        ) : (
-          <div className="mt-4">
-            <p className="font-semibold">Doctor:</p>
-            <p>Not Assigned</p>
-          </div>
-        )
-      }
-      
+        </div>
+      ) : (
+        <div className="mt-4">
+          <p className="font-semibold">Doctor:</p>
+          <p>Not Assigned</p>
+        </div>
+      )}
     </div>
-  )
+  );
 }
-

@@ -8,4 +8,4 @@ export default function NewServicePage() {
       <ServiceForm onSubmit={createService} />
     </div>
   )
-}
+} 

@@ -8,7 +8,6 @@ import { BarChart2, ChevronDown, ChevronRight, AlertCircle, BarChart3, Bed, Cale
 import { UserButton, useUser } from "@clerk/nextjs";
 
 const sidebarItems = [
-  // Dashboards
   {
     title: "Dashboard",
     icon: BarChart3,
@@ -81,11 +80,8 @@ const sidebarItems = [
     title: "Services",
     icon: Rows3,
     submenu: [
-      { title: "Add Service", href: "/list/services/list/new" },
       { title: "Service List", href: "/list/services/list" },
-      { title: "Add Test", href: "/list/services/tests/add" },
       { title: "Tests List", href: "/list/services/tests" },
-      { title: "Add Surgery", href: "/list/services/surgery/add" },
       { title: "Surgeries List", href: "/list/services/surgery" },
     ],
     visible: ["admin"]

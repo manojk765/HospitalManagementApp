@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AddPatientForm() {
   const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
-    gender: 'Male', // Default gender option
+    gender: 'Male', 
     date_of_birth: '',
     age: '',
     contact_number: '',
@@ -16,12 +16,28 @@ export default function AddPatientForm() {
     city: '',
     state: '',
     zip_code: '',
-    category: 'Gynecology', // Default category option
+    category: 'Gynecology',
+    doctor_id : '' ,
   })
 
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [newPatientId, setNewPatientId] = useState('')
+  const [doctors, setDoctors] = useState<{ doctor_id: string, name: string }[]>([])
+
+  useEffect(() => {
+    // Fetch doctors from the API
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch('/api/doctors')
+        const data = await response.json()
+        setDoctors(data)
+      } catch (error) {
+        setError('Failed to load doctors')
+      }
+    }
+    fetchDoctors()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,6 +62,7 @@ export default function AddPatientForm() {
           state: formData.state,
           zip_code: formData.zip_code,
           category: formData.category,
+          doctor_id: formData.doctor_id 
         }),
       })
       
@@ -68,10 +85,11 @@ export default function AddPatientForm() {
           state: '',
           zip_code: '',
           category: 'Gynecology',
+          doctor_id:'',
         })
 
         setTimeout(() => {
-          router.push('/patients/list')
+          router.push('/list/patients/list')
         }, 5000)
       } else {
         setError(data.error || 'Failed to add patient')
@@ -226,6 +244,24 @@ export default function AddPatientForm() {
           <option value="Gynecology">Gynecology</option>
           <option value="IVF">IVF</option>
           <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Doctor</label>
+        <select
+          name="doctor_id"
+          value={formData.doctor_id}
+          onChange={handleChange}
+          className="border p-2 w-full"
+          required
+        >
+          <option value="">Select Doctor</option>
+          {doctors.map((doctor) => (
+            <option key={doctor.doctor_id} value={doctor.doctor_id}>
+              {doctor.name} (ID: {doctor.doctor_id})
+            </option>
+          ))}
         </select>
       </div>
 

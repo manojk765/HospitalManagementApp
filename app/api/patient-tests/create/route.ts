@@ -1,52 +1,27 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { error } from "console";
+import { NextResponse } from "next/server"
+import prisma from "@/lib/prisma"
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const {
-      patient_id,
-      test_name,
-      result_description,
-      quantity,
-      total_cost,
-    } = body;
+    const body = await req.json()
+    const { patient_id, test_name, quantity, total_cost, test_date, result_description } = body
 
-    if (
-      !patient_id ||
-      !test_name ||
-      !result_description ||
-      !quantity ||
-      total_cost === undefined 
-      // ||
-      // !test_date
-    ) {
-      return NextResponse.json(
-        { error: `Missing required fields ${error}` },
-        { status: 400 }
-      );
-    }
-
-    const patientTest = await prisma.patientTests.create({
+    const newTest = await prisma.patientTests.create({
       data: {
         patient_id,
         test_name,
-        result_description ,
         quantity,
         total_cost,
-        test_date: new Date(),
-        is_paid: false, 
+        test_date: new Date(test_date),
+        result_description,
+        is_paid: false,
       },
-    });
+    })
 
-    // Return the created patient test record
-    return NextResponse.json(patientTest);
+    return NextResponse.json(newTest)
   } catch (error) {
-    console.error("Error creating patient test:", error);
-    return NextResponse.json(
-      { error: "Failed to create patient test" },
-      { status: 500 }
-    );
+    console.error("Error creating test:", error)
+    return NextResponse.json({ error: "Error creating test" }, { status: 500 })
   }
 }
+

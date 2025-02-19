@@ -3,8 +3,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// MySQL database configuration
-datasource db {
+datasource db { 
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
@@ -122,14 +121,14 @@ model Patient {
   registration_date DateTime       @default(now())
   category         Category
 
-  prescriptions    Prescription[]
-  tests            PatientTests[]
-  services         PatientService[]
-  surgery          PatientSurgery[]
   doctors          PatientDoctor[]
+  services         PatientService[]
+  tests            PatientTests[]
+  surgery          PatientSurgery[]
   Admission        Admission[]
   PatientAdmissionFee PatientAdmissionFee[]
   Birth            Birth[]
+  prescriptions    Prescription[]
 }
 
 // Prescription model
@@ -249,6 +248,7 @@ model PatientAdmissionFee {
   dischargeDate DateTime
   totalDays     Int
   totalCost     Decimal  @db.Decimal(10, 2)
+  is_paid       Boolean  @default(false)
 
   @@id([patient_id, room_id, admittedDate])
 

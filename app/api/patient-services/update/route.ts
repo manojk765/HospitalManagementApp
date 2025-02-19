@@ -18,17 +18,14 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Parse request body for the data to be updated
     const { quantity, total_cost } = await request.json();
 
-    // Convert the `service_date` to a Date object and strip the time part
     const startOfDay = new Date(service_date);
-    startOfDay.setUTCHours(0, 0, 0, 0); // Set time to the start of the day (00:00:00)
+    startOfDay.setUTCHours(0, 0, 0, 0); 
 
     const endOfDay = new Date(service_date);
     endOfDay.setUTCHours(23, 59, 59, 999); // Set time to the end of the day (23:59:59)
 
-    // Perform the update using patient_id, service_name, and date range (ignoring the exact time)
     const updatedService = await prisma.patientService.updateMany({
       where: {
         patient_id: patient_id,

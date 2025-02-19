@@ -7,10 +7,9 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     
     const patient_id = searchParams.get('patient_id');
-    const service_name = searchParams.get('service_name');
+    let service_name = searchParams.get('service_name');
     const service_date = searchParams.get('service_date');
 
-    // Validate if all required parameters are present
     if (!patient_id || !service_name || !service_date) {
       return NextResponse.json(
         { error: "Missing required query parameters" },
@@ -18,21 +17,21 @@ export async function DELETE(request: Request) {
       );
     }
 
-    // Convert service_date to Date object and get the start and end of the day
+    service_name = decodeURIComponent(service_name)
+    
     const startOfDay = new Date(service_date);
-    startOfDay.setHours(0, 0, 0, 0); // Set to the start of the day
+    startOfDay.setHours(0, 0, 0, 0); 
 
     const endOfDay = new Date(service_date);
-    endOfDay.setHours(23, 59, 59, 999); // Set to the end of the day
+    endOfDay.setHours(23, 59, 59, 999);  
 
-    // Perform the deletion, deleting any service on that date regardless of time
     const deletedServices = await prisma.patientService.deleteMany({
       where: {
         patient_id,
         service_name,
         service_date: {
-          gte: startOfDay, // Greater than or equal to the start of the day
-          lt: endOfDay,    // Less than the end of the day
+          gte: startOfDay, 
+          lt: endOfDay,    
         },
       },
     });

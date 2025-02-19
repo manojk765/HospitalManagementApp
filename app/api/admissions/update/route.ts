@@ -1,6 +1,33 @@
 import { NextResponse } from "next/server";
 import prisma from '@/lib/prisma';
 
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const patientId = searchParams.get('patientId');
+
+  if (!patientId) {
+    return NextResponse.json(
+      { error: "Missing required query parameters" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const admissions = await prisma.admission.findMany({
+      where: {
+        patient_id : patientId ,
+      },
+      include: {
+        patient: true, 
+      },
+    });
+
+    return NextResponse.json(admissions, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Unable to fetch admissions" }, { status: 500 });
+  }
+}
+
 export async function PUT(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

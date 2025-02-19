@@ -3,8 +3,10 @@ import prisma from "@/lib/prisma"
 import Link from "next/link"
 
 export default async function DeleteServicePage({ params }: { params: { service_name: string } }) {
+  const serviceName = decodeURIComponent(params.service_name)
+
   const service = await prisma.services.findUnique({
-    where: { service_name: params.service_name },
+    where: { service_name: serviceName },
     include: { services : true },  
   })
 

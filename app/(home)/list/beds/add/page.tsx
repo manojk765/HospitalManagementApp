@@ -150,18 +150,6 @@ export default function AdmissionPage() {
         admittedDate,
       }
 
-      const roomResponse = await fetch(`/api/rooms/${selectedRoom}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ available: false }),
-      });
-
-      if (!roomResponse.ok) {
-        throw new Error('Failed to update room availability');
-      }
-
       const response = await fetch("/api/admissions", {
         method: "POST",
         headers: {
@@ -176,8 +164,19 @@ export default function AdmissionPage() {
         setAdmittedDate(today); 
         setSelectedPatient('');
         setSelectedRoom('') ;
-        throw new Error(errorData.error || "Admission failed")
-        
+        throw new Error(errorData.error || "Admission failed") 
+      }
+
+      const roomResponse = await fetch(`/api/rooms/${selectedRoom}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ available: false }),
+      });
+
+      if (!roomResponse.ok) {
+        throw new Error('Failed to update room availability');
       }
 
       const today = new Date().toISOString().split('T')[0]; 
@@ -214,12 +213,6 @@ export default function AdmissionPage() {
     if( !admission ){
       console.log("No Admission")
     }else{
-      // console.log( admission.patientId ) ;
-      // console.log( admission.roomId) ;
-      console.log( admission.dischargeDate) ;
-      // console.log( totalCost)
-
-      // Updating room status 
       const roomResponse = await fetch(`/api/rooms/${admission.roomId}`, {
         method: 'PATCH',
         headers: {
@@ -249,8 +242,6 @@ export default function AdmissionPage() {
       }catch(error){
         console.log(error)
       }
-
-      // Adding admission fee to patient
 
       const totalDays = Math.ceil(
         (new Date(dischargeDate).getTime() -

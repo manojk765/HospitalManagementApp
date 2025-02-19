@@ -16,5 +16,5 @@ export async function updateService(formData: FormData) {
     },
   })
 
-  revalidatePath("/services")
+  revalidatePath("/list/services/list")
 }

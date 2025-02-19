@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache" 
 import prisma from "@/lib/prisma"
 
 export async function deleteService(formData: FormData) {
@@ -9,6 +10,7 @@ export async function deleteService(formData: FormData) {
     where: { service_name },
   })
 
+  revalidatePath('/list/services/tests')
   
 }
 

@@ -1,23 +1,32 @@
-import type { PatientSurgery } from "@prisma/client";
- 
-export default function PatientSurgeries({ surgeries }: { surgeries: PatientSurgery[] }) {
+import prisma from "@/lib/prisma";
+
+async function getPatientSurgeries(patientId: string) {
+  const surgeries = await prisma.patientSurgery.findMany({
+    where: { patient_id: patientId },
+    orderBy: { surgery_date: 'desc' }
+  }); 
+  return surgeries;
+}
+
+export default async function PatientSurgeries({ patientId }: { patientId: string }) {
+  const surgeries = await getPatientSurgeries(patientId);
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-semibold mb-4">Surgeries</h2>
+      
       {surgeries.length === 0 ? (
         <p>No surgeries recorded for this patient.</p>
       ) : (
         <ul className="divide-y divide-gray-200">
           {surgeries.map((surgery) => (
-            <li className="py-4" key={surgery.surgery_name}>
+            <li className="py-4" key={`${surgery.surgery_name}-${surgery.surgery_date}`}>
               <div className="flex justify-between">
                 <span className="font-medium">{surgery.surgery_name}</span>
-                <span className="text-gray-600">{new Date(surgery.surgery_date).toLocaleDateString()}</span>
+                <span className="text-gray-600">
+                  {new Date(surgery.surgery_date).toLocaleDateString()}
+                </span>
               </div>
-              {/* <div className="mt-2">
-                <p className="text-sm">{surgery.result_description}</p>
-              </div> 
-              <div className="text-sm text-gray-500 mt-1">Performed by: Dr. {surgery.doctor_id}</div> */}
               <div className="mt-2">
                 <span
                   className={`px-2 py-1 rounded-full text-xs ${

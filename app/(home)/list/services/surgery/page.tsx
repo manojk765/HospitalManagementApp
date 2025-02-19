@@ -58,7 +58,7 @@ export default async function SurgeryListPage({
             <TableSearch />
           </div>
           <Link
-            href="/surgeries/new"
+            href="/list/services/surgery/new"
             className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
           >
             <Plus className="w-5 h-5" />
@@ -88,14 +88,14 @@ export default async function SurgeryListPage({
                 </td>
                 <td className="border px-4 py-2 text-center">
                   <Link
-                    href={`/surgeries/edit/${surgery.surgery_name}`}
+                    href={`/list/services/surgery/edit/${surgery.surgery_name}`}
                     className="text-blue-500 hover:text-blue-700 p-4"
                   >
                     Edit
                   </Link>
 
                   <Link
-                    href={`/surgeries/delete/${surgery.surgery_name}`}
+                    href={`/list/services/surgery/delete/${surgery.surgery_name}`}
                     className="text-red-500 hover:text-red-700 p-4"
                   >
                     Delete

@@ -1,11 +1,26 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+
+export async function GET() {
+  try {
+    const doctors = await prisma.doctor.findMany({
+      select: {
+        doctor_id: true,
+        name: true,
+      },
+    });
+
+    return new Response(JSON.stringify(doctors), { status: 200 });
+  } catch (error) {
+    return new Response('Failed to fetch doctors', { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
     try {
       const body = await request.json();
-  
-      // Get the last doctor based on the ID
+
       const lastDoctor = await prisma.doctor.findFirst({
         orderBy: {
           doctor_id: 'desc',
