@@ -97,7 +97,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-gray-500" />
-                <span className="text-base font-medium">Today's Appointments</span>
+                <span className="text-base font-medium">Today's Appointments</span> 
               </div>
               <span className="text-2xl font-bold text-gray-800">470</span>
             </div>

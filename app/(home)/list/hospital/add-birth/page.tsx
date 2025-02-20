@@ -85,7 +85,7 @@ export default function CreateBirthPage() {
                         <option value="">Select Patient ID</option>
                         {patients.map((patient) => (
                             <option key={patient.patient_id} value={patient.patient_id}>
-                                {patient.patient_id}
+                                {patient.patient_id } - { patient.name}
                             </option>
                         ))}
                     </select>

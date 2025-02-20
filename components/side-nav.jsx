@@ -32,9 +32,10 @@ const sidebarItems = [
     title: "Patient Management",
     icon: Users,
     submenu: [
-      { title: "Add Patient", href: "/list/patients/add" },
-      { title: "IPD/OPD Patients", href: "/list/patients/list" },
-      { title: "Patient Profile", href: "/list/patients/profile" },
+      { title: "Add IPD Patient", href: "/list/patients/add/ipd" },
+      { title: "IPD Patients", href: "/list/patients/ipd" },
+      {title:"Add OPD Patient", href:"/list/patients/add/opd"},
+      { title: "OPD Patients", href: "/list/patients/opd" },
     ],
     visible: ["admin", "staff"]
   },
@@ -103,9 +104,8 @@ const sidebarItems = [
     title: "Finance",
     icon: Wallet,
     submenu: [
-      { title: "Add Invoice", href: "/finance/invoice" },
-      { title: "Invoice List", href: "/finance/invoice-list" },
-      { title: "Invoice Details", href: "/finance/invoice-details" },
+      { title: "Add Expense", href: "/finance/expense" },
+      { title: "Expenses List", href: "/finance/expense-list" },
     ],
     visible: ["admin"]
   }

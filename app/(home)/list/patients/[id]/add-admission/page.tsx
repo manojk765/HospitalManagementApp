@@ -199,18 +199,6 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
     if (!admission) {
       console.log("No Admission")
     } else {
-      const roomResponse = await fetch(`/api/rooms/${admission.roomId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ available: true }),
-      })
-
-      if (!roomResponse.ok) {
-        throw new Error("Failed to update room availability")
-      }
-
       try {
         const response = await fetch(
           `/api/admissions/update?patientId=${admission.patientId}&roomId=${admission.roomId}&admittedDate=${admission.admittedDate}`,
@@ -226,6 +214,18 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
         )
       } catch (error) {
         console.log(error)
+      }
+
+      const roomResponse = await fetch(`/api/rooms/${admission.roomId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ available: true }),
+      })
+
+      if (!roomResponse.ok) {
+        throw new Error("Failed to update room availability")
       }
 
       const totalDays =
@@ -451,6 +451,13 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
       {patient && (
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2">Patient Information</h2>
+          <button 
+            onClick={() => window.history.back()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-md"
+          >
+            Go Back
+          </button>
+
           <p>
             <strong>ID:</strong> {patient.id}
           </p>
@@ -575,7 +582,6 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
                       {admission.dischargeDate ? formatDate(admission.dischargeDate) : "Not Assigned"}
                     </td>
                     <td className="px-4 py-2 border-b">
-                      {/* No edit button for discharged patients */}
                       <span className="text-gray-500">Discharged</span>
                     </td>
                   </tr>

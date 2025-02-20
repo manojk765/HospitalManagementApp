@@ -1,42 +1,57 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma"
+import { Decimal } from "@prisma/client/runtime/library.js"
 
 async function getPatientTests(patientId: string) {
   const tests = await prisma.patientTests.findMany({
-    where: { patient_id: patientId },
-    orderBy: { test_date: 'desc' }
-  });
-  return tests;
+    where: {
+      patient_id: patientId,
+      is_paid: false,
+    },
+    orderBy: { test_date: "desc" },
+  })
+  return tests
 }
 
 export default async function PatientLabTests({ patientId }: { patientId: string }) {
-  const tests = await getPatientTests(patientId);
-  
+  const tests = await getPatientTests(patientId)
+
+  const groupedTests = tests.reduce(
+    (acc, test) => {
+      const date = new Date(test.test_date).toLocaleDateString()
+      if (!acc[date]) {
+        acc[date] = []
+      }
+      acc[date].push(test)
+      return acc
+    },
+    {} as Record<string, typeof tests>,
+  )
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-semibold mb-4">Lab Tests</h2>
-      {tests.length === 0 ? (
-        <p>No lab tests recorded for this patient.</p>
-      ) : (
-        <ul className="divide-y divide-gray-200">
-          {tests.map((test) => (
-            <li key={`${test.test_name}-${test.test_date}`} className="py-4">
-              <div className="flex flex-col">
-                <span className="text-gray-600">
-                  {new Date(test.test_date).toLocaleDateString()}
+      {Object.entries(groupedTests).map(([date, dateTests]) => (
+        <div key={date} className="mb-6 border-b pb-4">
+          <h3 className="text-lg font-medium mb-2">{date}</h3>
+          <ul className="space-y-2">
+            {dateTests.map((test) => (
+              <li key={`₹{test.test_name}-₹{test.test_date}`} className="flex justify-between">
+                <span>
+                  {test.test_name} (x{test.quantity})
                 </span>
-                <span className="font-medium">{test.test_name}</span>
-              </div>
-              <div className="mt-2">
-                <p className="text-sm">{test.result_description}</p>
-              </div>
-              <div className="flex justify-between mt-2">
-                <span>Quantity: {test.quantity}</span>
-                <span>Total Cost: ${test.total_cost.toString()}</span>
-              </div>
-            </li> 
-          ))}
-        </ul>
-      )}
+                <span>₹{test.total_cost.toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-2 text-right font-semibold">
+            Total: ₹{dateTests.reduce((sum, test) => sum.add(test.total_cost), new Decimal(0)).toFixed(2)}
+          </div>
+        </div>
+      ))}
+      <div className="mt-4 text-right font-bold text-lg">
+        Grand Total: ₹{tests.reduce((sum, test) => sum.add(test.total_cost), new Decimal(0)).toFixed(2)}
+      </div>
     </div>
-  );
+  )
 }
+

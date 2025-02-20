@@ -43,6 +43,15 @@ export default function AdmissionPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter patients based on search query, or return all if no query is entered
+  const filteredPatients = patients.filter(
+    (patient) =>
+      !searchQuery ||
+      patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.id.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const router = useRouter()
 
@@ -469,6 +478,20 @@ function formatDate(dateString: string): string {
 
       <form onSubmit={handleSubmit} className="space-y-6 mb-8">
         <div>
+          {/* Search Input */}
+          <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+            Search Patient:
+          </label>
+          <input
+            type="text"
+            id="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by patient ID or name"
+            className="w-full p-2 mb-4 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+
+          {/* Select Dropdown */}
           <label htmlFor="patient" className="block text-sm font-medium text-gray-700 mb-2">
             Select Patient:
           </label>
@@ -480,9 +503,9 @@ function formatDate(dateString: string): string {
             required
           >
             <option value="">Select a patient</option>
-            {patients.map((patient) => (
+            {filteredPatients.map((patient) => (
               <option key={patient.id} value={patient.id}>
-                {patient.id}-{patient.name}
+                {patient.id} - {patient.name}
               </option>
             ))}
           </select>

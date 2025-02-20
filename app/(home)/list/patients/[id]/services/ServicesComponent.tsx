@@ -148,7 +148,8 @@ export default function ServicesComponent({ services: initialServices, patientId
         setQuantity(1);
         setTotalCost(0);
         setCanEditTotalCost(false);
-        setServiceDate('');
+        const today = new Date().toISOString().split('T')[0]; 
+        setServiceDate(today); 
         return;
       }
       if (!res.ok) throw new Error("Failed to add service");
