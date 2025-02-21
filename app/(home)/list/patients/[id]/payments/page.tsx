@@ -2,12 +2,8 @@
 
 import Decimal from "decimal.js"
 import { useEffect, useState } from "react"
-import { Trash2, Edit2, Search } from "lucide-react"
-
-interface Patient {
-  patient_id: string
-  name: string
-}
+import { Trash2, Edit2, Search, ArrowLeft } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface Payment {
   payment_id: string
@@ -25,12 +21,8 @@ interface PaymentFormData {
   amount_paid: Decimal
 }
 
-// Modal component
-const Modal = ({ 
-  isOpen, 
-  onClose, 
-  children 
-}: { 
+// Modal component remains the same as your original code
+const Modal = ({ isOpen, onClose, children }: { 
   isOpen: boolean
   onClose: () => void
   children: React.ReactNode 
@@ -58,7 +50,6 @@ const Modal = ({
     >
       <div className="flex min-h-screen items-center justify-center">
         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
-
         <div 
           className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-lg"
           onClick={e => e.stopPropagation()}
@@ -70,10 +61,12 @@ const Modal = ({
   )
 }
 
-export default function PaymentsPage() {
-  const [patients, setPatients] = useState<Patient[]>([])
+export default function PatientPaymentsPage({ params }: { params: { id: string } }) {
+  const patientId =  params.id
+  const router = useRouter()
+  
+  const [patientName, setPatientName] = useState("")
   const [payments, setPayments] = useState<Payment[]>([])
-  const [selectedPatient, setSelectedPatient] = useState("")
   const [paymentDate, setPaymentDate] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
   const [amount, setAmount] = useState(0)
@@ -87,32 +80,35 @@ export default function PaymentsPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]
-    setPaymentDate(today)
-    setSearchDate(today)
-  }, [])
+    const today = new Date().toISOString().split('T')[0];
+    setPaymentDate(today);
+    setSearchDate(today);
+  }, []);
+  
+  useEffect(() => {
+    if (searchDate && patientId) {
+      fetchPayments(searchDate);
+    }
+  }, [searchDate, patientId]); 
+  
 
   useEffect(() => {
     if (error) {
-      const timer = setTimeout(() => {
-        setError(null)
-      }, 3000)
+      const timer = setTimeout(() => setError(null), 3000)
       return () => clearTimeout(timer)
     }
   }, [error])
 
   useEffect(() => {
     if (successMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage(null)
-      }, 3000)
+      const timer = setTimeout(() => setSuccessMessage(null), 3000)
       return () => clearTimeout(timer)
     }
   }, [successMessage])
 
   const fetchPayments = async (date: string) => {
     try {
-      const response = await fetch(`/api/payments?date=${date}`)
+      const response = await fetch(`/api/payments?date=${date}&patientId=${patientId}`)
       if (!response.ok) throw new Error("Failed to fetch payments")
       const data = await response.json()
       setPayments(data)
@@ -128,13 +124,10 @@ export default function PaymentsPage() {
         setIsLoading(true)
         setError(null)
 
-        const patientsResponse = await fetch("/api/patient")
-        if (!patientsResponse.ok) throw new Error("Failed to fetch patient data")
-
-        const patientsData = await patientsResponse.json()
-        setPatients(patientsData)
-
-        await fetchPayments(searchDate)
+        const patientResponse = await fetch(`/api/patient/${patientId}`)
+        if (!patientResponse.ok) throw new Error("Failed to fetch patient data")
+        const patientData = await patientResponse.json()
+        setPatientName(patientData.name)
       } catch (err) {
         setError("Failed to load data. Please check your connection and try again.")
         console.error(err)
@@ -144,7 +137,7 @@ export default function PaymentsPage() {
     }
 
     fetchData()
-  }, [searchDate])
+  }, [patientId, searchDate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -152,7 +145,7 @@ export default function PaymentsPage() {
     setError(null)
 
     const paymentData: PaymentFormData = {
-      patient_id: selectedPatient,
+      patient_id: patientId,
       payment_date: paymentDate,
       payment_method: paymentMethod,
       amount_paid: new Decimal(amount),
@@ -207,7 +200,6 @@ export default function PaymentsPage() {
   }
 
   const resetForm = () => {
-    setSelectedPatient("")
     setPaymentMethod("")
     setAmount(0)
     setEditingPayment(null)
@@ -215,8 +207,7 @@ export default function PaymentsPage() {
 
   const handleEdit = (payment: Payment) => {
     setEditingPayment(payment)
-    setSelectedPatient(payment.patient_id)
-    const date =  new Date(payment.payment_date).toISOString().split('T')[0] 
+    const date = new Date(payment.payment_date).toISOString().split('T')[0]
     setPaymentDate(date)
     setPaymentMethod(payment.payment_method)
     setAmount(Number(payment.amount_paid))
@@ -233,10 +224,9 @@ export default function PaymentsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      
       {(error || successMessage) && (
         <div
-          className={`fixed top-6 left-1/2 transform -translate-x-1/2 p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ₹{
+          className={`fixed top-6 left-1/2  p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ${
             error ? 'bg-red-600' : 'bg-green-600'
           }`}
           role="alert"
@@ -247,22 +237,32 @@ export default function PaymentsPage() {
         </div>
       )}
 
-
-      <div className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">Payments Management</h1>
+      <div className="mb-8">
         <button
-          onClick={() => setIsDialogOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition duration-200 mb-4"
         >
-          Add New Payment
+          <ArrowLeft size={20} />
+          Back to Patients
         </button>
+        
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Payment History</h1>
+            <p className="text-gray-600 mt-1">Patient: {patientName}</p>
+          </div>
+          <button
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+          >
+            Add New Payment
+          </button>
+        </div>
       </div>
 
-      {/* Main Content */}
       <div className="bg-white rounded-lg shadow-lg mb-8">
         <div className="p-6 bg-gray-50 rounded-t-lg">
-          <h2 className="text-xl font-semibold text-gray-800">Payment Records</h2>
-          <div className="flex gap-4 items-center mt-4">
+          <div className="flex gap-4 items-center">
             <div className="relative">
               <input
                 type="date"
@@ -280,7 +280,6 @@ export default function PaymentsPage() {
             <thead>
               <tr className="bg-gray-100">
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Payment ID</th>
-                <th className="p-3 text-left text-sm font-medium text-gray-700">Patient</th>
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Date</th>
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Method</th>
                 <th className="p-3 text-right text-sm font-medium text-gray-700">Amount</th>
@@ -290,7 +289,7 @@ export default function PaymentsPage() {
             <tbody>
               {payments.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                  <td colSpan={5} className="p-8 text-center text-gray-500">
                     No payments found for this date
                   </td>
                 </tr>
@@ -298,10 +297,9 @@ export default function PaymentsPage() {
                 payments.map((payment) => (
                   <tr key={payment.payment_id} className="border-b hover:bg-gray-50 transition duration-200">
                     <td className="p-3 text-sm text-gray-700">{payment.payment_id}</td>
-                    <td className="p-3 text-sm text-gray-700">{payment.patient_id} - {payment.patient_name}</td>
                     <td className="p-3 text-sm text-gray-700">{new Date(payment.payment_date).toLocaleDateString()}</td>
                     <td className="p-3 text-sm text-gray-700">{payment.payment_method}</td>
-                    <td className="p-3 text-sm text-right text-gray-700">{Number(payment.amount_paid).toFixed(2)}</td>
+                    <td className="p-3 text-sm text-right text-gray-700">₹{Number(payment.amount_paid).toFixed(2)}</td>
                     <td className="p-3 flex justify-center gap-2">
                       <button
                         onClick={() => handleEdit(payment)}
@@ -326,7 +324,6 @@ export default function PaymentsPage() {
         </div>
       </div>
 
-      {/* Payment Form Modal */}
       <Modal isOpen={isDialogOpen} onClose={() => {
         resetForm()
         setIsDialogOpen(false)
@@ -351,26 +348,6 @@ export default function PaymentsPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="patient" className="block text-sm font-medium text-gray-700">
-                Patient
-              </label>
-              <select
-                id="patient"
-                value={selectedPatient}
-                onChange={(e) => setSelectedPatient(e.target.value)}
-                disabled
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select a patient</option>
-                {patients.map((patient) => (
-                  <option key={patient.patient_id} value={patient.patient_id}>
-                    {patient.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <div className="space-y-2">
               <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700">
                 Payment Date

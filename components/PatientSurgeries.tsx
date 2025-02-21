@@ -10,7 +10,7 @@ async function getPatientSurgeries(patientId: string) {
     orderBy: { surgery_date: "desc" },
   })
   return surgeries
-}
+} 
 
 export default async function PatientSurgeries({ patientId }: { patientId: string }) {
   const surgeries = await getPatientSurgeries(patientId)

@@ -22,14 +22,23 @@ export default async function PatientsPage({
   const [patients, totalCount] = await Promise.all([
     prisma.patient.findMany({
       where: {
-        name: {
-          contains: searchQuery,
-        },
-      },
+        OR: [
+          {
+            name: {
+              contains: searchQuery,
+            },
+          },
+          {
+            patient_id: {
+              contains: searchQuery,
+            },
+          },
+        ],
+      },      
       skip,
       take: itemsPerPage,
       orderBy: {
-        patient_id: 'asc', // Optional: Sort by patient's name
+        patient_id: 'desc',
       },
     }),
     prisma.patient.count({

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BarChart2, ChevronDown, ChevronRight, AlertCircle, BarChart3, Bed, CalendarDays, FileText, Stethoscope, Users, Wallet, Factory, Pill, Rows3 } from "lucide-react";
+import { BarChart2, ChevronDown, ChevronRight, AlertCircle, BarChart3, Bed, Calendar , CalendarFold , Stethoscope, Users, Wallet, Factory, Pill, Rows3  , IndianRupee } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 const sidebarItems = [
@@ -40,6 +40,15 @@ const sidebarItems = [
     visible: ["admin", "staff"]
   },
   {
+    title: "Payments",
+    icon: IndianRupee ,
+    submenu:[
+      { title:"Add Payment",href:"/list/payments/add"},
+      {title:"View Payment History",href:"/list/payments/history"}
+    ],
+    visible: ["admin", "staff"]
+  },
+  {
     title: "Patient Management",
     icon: Users,
     href: "/list/patients/list", 
@@ -57,26 +66,34 @@ const sidebarItems = [
     visible: ["admin"]
   },
 
+  { 
+    title: "Admission Info",
+    icon: CalendarFold ,
+    submenu:[
+      { title: "Add admission" , href: "/list/admissions/add" },
+      {title: "Discharges",href: "/list/admissions/list"}
+
+    ],
+    visible: ["admin", "staff"]
+  },
   {
     title: "Monitor Births",
-    icon: Bed,
+    icon: Calendar,
     submenu: [
       { title: "Add Birth", href: "/list/hospital/add-birth" },
       { title: "Birth Report", href: "/list/hospital/birth-reports" },
     ],
     visible: ["admin", "staff"]
   },
-
   {
     title: "Beds Management",
-    icon: FileText,
+    icon: Bed,
     submenu: [
       { title: "Bed Group", href: "/list/beds/list" },
-      { title: "Add Admission", href: "/list/beds/add" },
+      { title: "Add a new bed", href: "/list/beds/add" },
     ],
     visible: ["admin", "staff"]
   },
-
   {
     title: "Services",
     icon: Rows3,

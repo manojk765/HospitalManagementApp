@@ -41,9 +41,6 @@ export async function POST(request: Request) {
       doctor_id 
     } = body;
 
-    
-
-    // Validate required fields
     if (!name || !gender || !date_of_birth || !age || !contact_number || !category || !doctor_id) {
       return NextResponse.json(
         { error: 'Missing required fields' },
