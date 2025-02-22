@@ -13,12 +13,11 @@ export default async function PatientsPage({
   }
 }) {
   const page = parseInt(searchParams.page || '1', 10);
-  const itemsPerPage = 7; // Customize the items per page
+  const itemsPerPage = 7;
   const searchQuery = searchParams.search || '';
 
   const skip = (page - 1) * itemsPerPage;
 
-  // Fetch patients based on search and pagination
   const [patients, totalCount] = await Promise.all([
     prisma.patient.findMany({
       where: {

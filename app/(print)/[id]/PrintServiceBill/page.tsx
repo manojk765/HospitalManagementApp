@@ -64,8 +64,8 @@ export default async function PrintServiceBill({ params }: { params: { id: strin
                       <tr key={service.service_id}>
                         <td className="border border-gray-300 px-4 py-2">{service.service_name}</td>
                         <td className="border border-gray-300 px-4 py-2">{service.quantity}</td>
-                        {/* <td className="border border-gray-300 px-4 py-2">${Number(service.cost).toFixed(2)}</td> */}
-                        <td className="border border-gray-300 px-4 py-2">${Number(service.total_cost).toFixed(2)}</td>
+                        {/* <td className="border border-gray-300 px-4 py-2">₹{Number(service.cost).toFixed(2)}</td> */}
+                        <td className="border border-gray-300 px-4 py-2">₹{Number(service.total_cost).toFixed(2)}</td>
                       </tr>
                     );
                   })}
@@ -79,7 +79,7 @@ export default async function PrintServiceBill({ params }: { params: { id: strin
       </div>
 
       <div className="mt-6">
-        <h3 className="text-xl font-semibold">Total Service Bill: ${totalBill.toFixed(2)}</h3>
+        <h3 className="text-xl font-semibold">Total Service Bill: ₹{totalBill.toFixed(2)}</h3>
       </div>
     </div>
   );

@@ -305,7 +305,7 @@ model Payment {
   payment_date   DateTime
   payment_method String   @db.VarChar(20)
   amount_paid    Decimal  @db.Decimal(10, 2)  
-  dischared       Boolean @default(false)
+  discharged       Boolean @default(false)
 
   patient        Patient  @relation(fields: [patient_id], references: [patient_id]) 
 
@@ -319,13 +319,10 @@ model Income {
   date        DateTime
   category    String   @db.VarChar(50)
   description String   @db.VarChar(20)
-  createdAt   DateTime @default(now())  @db.Timestamp(0)
-
 }
 
 
 model Expense {
-
   id          Int      @id @default(autoincrement())
   title       String   @db.VarChar(50)
   amount      Decimal  @db.Decimal(10, 2)  
@@ -333,6 +330,4 @@ model Expense {
   date        DateTime
   category    String   @db.VarChar(50)
   description String   @db.VarChar(20)
-  createdAt   DateTime @default(now())  @db.Timestamp(0)
-
 }

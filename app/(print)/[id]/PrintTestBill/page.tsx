@@ -65,7 +65,7 @@ export default async function PrintTestBill({ params }: { params: { id: string }
                     return (
                       <tr key={test.test_id}>
                         <td className="border border-gray-300 px-4 py-2">{test.labTest.test_name}</td>
-                        <td className="border border-gray-300 px-4 py-2">${Number(test.labTest.cost).toFixed(2)}</td>
+                        <td className="border border-gray-300 px-4 py-2">₹{Number(test.labTest.cost).toFixed(2)}</td>
                       </tr>
                     );
                   })}
@@ -79,7 +79,7 @@ export default async function PrintTestBill({ params }: { params: { id: string }
       </div>
 
       <div className="mt-6">
-        <h3 className="text-xl font-semibold">Total Test Bill: ${totalBill.toFixed(2)}</h3>
+        <h3 className="text-xl font-semibold">Total Test Bill: ₹{totalBill.toFixed(2)}</h3>
       </div>
     </div>
   );

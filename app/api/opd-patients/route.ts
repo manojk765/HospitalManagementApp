@@ -46,32 +46,40 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date');
 
-    if (!date) {
-      return NextResponse.json(
-        { error: 'Date parameter is required' },
-        { status: 400 }
-      );
-    }
+    let patients;
 
-    const parsedDate = new Date(date);
-    const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999));
+    if (date) {
+      // Parse the provided date
+      const parsedDate = new Date(date);
+      const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999));
 
-    // Fetch patients who visited on the specified date
-    const patients = await prisma.opdPatient.findMany({
-      where: {
-        visitDate: {
-          gte: startOfDay, // start of the day
-          lt: endOfDay,    // end of the day
+      // Fetch patients who visited on the specified date
+      patients = await prisma.opdPatient.findMany({
+        where: {
+          visitDate: {
+            gte: startOfDay, // start of the day
+            lt: endOfDay,    // end of the day
+          },
         },
-      },
-      include: {
-        doctor: true, // Assuming you have a relation to the doctor
-      },
-      orderBy: {
-        visitDate: 'asc',
-      },
-    });
+        include: {
+          doctor: true, // Assuming you have a relation to the doctor
+        },
+        orderBy: {
+          visitDate: 'asc',
+        },
+      });
+    } else {
+      // Fetch all patients when no date is provided
+      patients = await prisma.opdPatient.findMany({
+        include: {
+          doctor: true, // Assuming you have a relation to the doctor
+        },
+        orderBy: {
+          visitDate: 'asc',
+        },
+      });
+    }
 
     // Return the patients as a JSON response
     return NextResponse.json(patients);

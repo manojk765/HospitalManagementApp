@@ -26,7 +26,7 @@ interface Admission {
 export default function AdmissionList() {
   const [admissions, setAdmissions] = useState<Admission[]>([])
   const [patients, setPatients] = useState<Patient[]>([])
-  const [rooms, setRooms] = useState<Room[]>([])
+  const [rooms, setRooms] = useState<Room[]>([]) 
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>('')

@@ -89,7 +89,6 @@ export default function PaymentsPage() {
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
     setPaymentDate(today)
-    setSearchDate(today)
   }, [])
 
   useEffect(() => {
@@ -359,7 +358,7 @@ export default function PaymentsPage() {
                 id="patient"
                 value={selectedPatient}
                 onChange={(e) => setSelectedPatient(e.target.value)}
-                disabled
+                disabled={!!editingPayment}
                 className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select a patient</option>

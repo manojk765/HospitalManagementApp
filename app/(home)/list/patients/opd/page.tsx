@@ -4,8 +4,7 @@ import Decimal from "decimal.js";
 import React, { useState, useEffect } from "react";
 
 interface Patient {
-  id: number;
-  patient_id: string;
+  id: string;
   name: string;
   contact: string;
   visitDate: string;
@@ -19,19 +18,28 @@ interface Patient {
 
 export default function DailyVisitLog() {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
+  const [date, setDate] = useState("");
 
- 
   useEffect(() => {
     fetchPatients();
-  }, [date]);  
+  }, []); // Fetch all patients on initial load
+
+  useEffect(() => {
+    if (date) {
+      applyDateFilter();
+    } else {
+      setFilteredPatients(patients); // If no date is selected, show all patients
+    }
+  }, [date, patients]);
 
   const fetchPatients = async () => {
     try {
-      const response = await fetch(`/api/opd-patients?date=${date}`);
+      const response = await fetch("/api/opd-patients");
       if (response.ok) {
         const data = await response.json();
         setPatients(data);
+        setFilteredPatients(data); // Initially show all patients
       } else {
         console.error("Error fetching patient records");
       }
@@ -40,8 +48,15 @@ export default function DailyVisitLog() {
     }
   };
 
+  const applyDateFilter = () => {
+    const filtered = patients.filter(
+      (patient) => new Date(patient.visitDate).toISOString().split("T")[0] === date
+    );
+    setFilteredPatients(filtered);
+  };
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value); 
+    setDate(e.target.value);
   };
 
   const handleExport = () => {
@@ -56,9 +71,9 @@ export default function DailyVisitLog() {
     ];
     const csvContent = [
       headers.join(","),
-      ...patients.map((patient) =>
+      ...filteredPatients.map((patient) =>
         [
-          patient.patient_id,
+          patient.id,
           patient.name,
           patient.contact,
           new Date(patient.visitDate).toLocaleString(),
@@ -69,13 +84,13 @@ export default function DailyVisitLog() {
       ),
     ].join("\n");
 
-    // to enable CSV export
+    // Enable CSV export
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     if (link.download !== undefined) {
       const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
-      link.setAttribute("download", `daily_visit_log_${date}.csv`);
+      link.setAttribute("download", `daily_visit_log_${date || "all"}.csv`);
       link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
@@ -113,14 +128,14 @@ export default function DailyVisitLog() {
           </tr>
         </thead>
         <tbody>
-          {patients.length === 0 ? (
+          {filteredPatients.length === 0 ? (
             <tr>
               <td colSpan={7} className="border p-2 text-center">
                 No patients for this date
               </td>
             </tr>
           ) : (
-            patients.map((patient) => (
+            filteredPatients.map((patient) => (
               <tr key={patient.id}>
                 <td className="border p-2">{patient.id}</td>
                 <td className="border p-2">{patient.name}</td>

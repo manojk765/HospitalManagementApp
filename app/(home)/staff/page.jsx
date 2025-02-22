@@ -1,7 +1,7 @@
 import { Download, MoreHorizontal, Users } from "lucide-react"
 
 export default function DashboardPage() {
-  return (
+  return ( 
     <div className="space-y-8 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-extrabold text-gray-800">Dashboard</h1>
@@ -16,14 +16,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {/* IPD Income Card */}
         <div className="border rounded-md p-4 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-lg font-semibold">IPD Income</h2>
             <div className="relative">
-              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <MoreHorizontal className="h-5 w-5" />
-              </button>
               <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-md hidden group-hover:block">
                 <button className="flex items-center px-4 py-2 hover:bg-gray-100">
                   <Download className="mr-2 h-4 w-4" />
@@ -44,9 +40,6 @@ export default function DashboardPage() {
         <div className="border rounded-md p-4 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-lg font-semibold">OPD Income</h2>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <MoreHorizontal className="h-5 w-5" />
-            </button>
           </div>
           <div className="mt-4">
             <div className="text-3xl font-bold text-gray-900">Rs.12,338</div>
@@ -56,29 +49,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Laboratory Income Card */}
-        <div className="border rounded-md p-4 shadow-lg hover:shadow-xl transition-shadow">
-          <div className="flex flex-row items-center justify-between">
-            <h2 className="text-lg font-semibold">Laboratory Income</h2>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <MoreHorizontal className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="mt-4">
-            <div className="text-3xl font-bold text-gray-900">Rs.20,847</div>
-            <p className="text-sm text-gray-500">
-              <span className="text-emerald-500 font-bold">↑ 4.63%</span> vs last week
-            </p>
-          </div>
-        </div>
-
         {/* Expenses Card */}
         <div className="border rounded-md p-4 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex flex-row items-center justify-between">
-            <h2 className="text-lg font-semibold">Expenses</h2>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <MoreHorizontal className="h-5 w-5" />
-            </button>
+            <h2 className="text-lg font-semibold">Expenses</h2> 
           </div>
           <div className="mt-4">
             <div className="text-3xl font-bold text-gray-900">Rs.23,485</div>

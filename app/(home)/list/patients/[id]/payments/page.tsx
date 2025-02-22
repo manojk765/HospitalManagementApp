@@ -82,11 +82,11 @@ export default function PatientPaymentsPage({ params }: { params: { id: string }
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     setPaymentDate(today);
-    setSearchDate(today);
+    // setSearchDate(today);
   }, []);
   
   useEffect(() => {
-    if (searchDate && patientId) {
+    if (searchDate || patientId) {
       fetchPayments(searchDate);
     }
   }, [searchDate, patientId]); 
@@ -117,6 +117,10 @@ export default function PatientPaymentsPage({ params }: { params: { id: string }
       console.error(err)
     }
   }
+
+  // useEffect(() =>{
+  //   fetchPayments(searchDate)
+  // })
 
   useEffect(() => {
     const fetchData = async () => {

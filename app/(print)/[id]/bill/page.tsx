@@ -8,7 +8,7 @@ async function getPatientData(id: string) {
       doctors: true,
     },
   })
-  return patient
+  return patient 
 }
 
 async function getDoctorData(id: string) {
@@ -42,22 +42,39 @@ async function getPatientSurgeries(patientId: string) {
   return surgeries
 }
 
+async function getAdmissionFee(patientId: string) {
+  const admissionFee = await prisma.patientAdmissionFee.findMany({
+    where: { patient_id: patientId },
+    orderBy: { admittedDate: "desc" },
+  });
+  return admissionFee;
+}
+
+async function getPayments(patientId: string) {
+  const payments = await prisma.payment.findMany({
+    where: { patient_id: patientId },
+    orderBy: { payment_date: "desc" },
+  });
+  return payments;
+}
 export default async function PatientBillPage({ params }: { params: { id: string } }) {
-  const patientId = params.id
-  const patient = await getPatientData(patientId)
-  const doctor = patient?.doctors[0] ? await getDoctorData(patient.doctors[0].doctor_id) : null
-  const tests = await getPatientTests(patientId)
-  const services = await getPatientServices(patientId)
-  const surgeries = await getPatientSurgeries(patientId)
+  const patientId = params.id;
+  const patient = await getPatientData(patientId);
+  const doctor = patient?.doctors[0] ? await getDoctorData(patient.doctors[0].doctor_id) : null;
+  const tests = await getPatientTests(patientId);
+  const services = await getPatientServices(patientId);
+  const surgeries = await getPatientSurgeries(patientId);
+  const admissionFee = await getAdmissionFee(patientId);
+  const payments = await getPayments(patientId);
 
   if (!patient) {
     return (
       <div className="bg-white shadow-md rounded-lg p-6">
         <p className="text-red-500">Patient not found</p>
       </div>
-    )
+    );
   }
 
-  return <PatientBill patient={patient} doctor={doctor} tests={tests} services={services} surgeries={surgeries} />
+  return <PatientBill patient={patient} doctor={doctor} tests={tests} services={services} surgeries={surgeries} admissionFee={admissionFee} payments={payments} />;
 }
 

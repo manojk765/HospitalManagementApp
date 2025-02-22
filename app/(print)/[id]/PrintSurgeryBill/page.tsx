@@ -7,7 +7,6 @@ async function getPatientSurgeryData(id: string) {
     include: {
       surgery: {
         include: {
-          doctor: true,  // Include doctor info
           surgery: true, // Include surgery details
         },
       },
@@ -59,23 +58,19 @@ export default async function PrintSurgeryBillPage({ params }: { params: { id: s
                   <thead>
                     <tr className="bg-gray-100">
                       <th className="border border-gray-300 px-4 py-2">Surgery Name</th>
-                      <th className="border border-gray-300 px-4 py-2">Doctor</th>
                       <th className="border border-gray-300 px-4 py-2">Description</th>
                       <th className="border border-gray-300 px-4 py-2">Cost</th>
-                      <th className="border border-gray-300 px-4 py-2">Paid</th>
                     </tr>
                   </thead>
                   <tbody>
                     {groupedSurgeries[date].map((surgery: any) => {
-                      const surgeryCost = Number(surgery.surgery.cost); // Assuming `surgery` table has a `cost` field
+                      const surgeryCost = Number(surgery.surgery.cost);  
                       totalBill += surgeryCost;
                       return (
                         <tr key={surgery.surgery_name}>
                           <td className="border border-gray-300 px-4 py-2">{surgery.surgery_name}</td>
-                          <td className="border border-gray-300 px-4 py-2">{surgery.doctor.name}</td>
                           <td className="border border-gray-300 px-4 py-2">{surgery.surgery_description}</td>
-                          <td className="border border-gray-300 px-4 py-2">${surgeryCost.toFixed(2)}</td>
-                          <td className="border border-gray-300 px-4 py-2">{surgery.is_paid ? "Yes" : "No"}</td>
+                          <td className="border border-gray-300 px-4 py-2">₹{surgeryCost.toFixed(2)}</td>
                         </tr>
                       );
                     })}
@@ -89,7 +84,7 @@ export default async function PrintSurgeryBillPage({ params }: { params: { id: s
         </div>
 
         <div className="mt-6">
-          <h3 className="text-xl font-semibold">Total Bill: ${totalBill.toFixed(2)}</h3>
+          <h3 className="text-xl font-semibold">Total Bill: ₹{totalBill.toFixed(2)}</h3>
         </div>
         {/* <button
           onClick={() => window.print()}

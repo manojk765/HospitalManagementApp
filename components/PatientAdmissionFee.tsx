@@ -8,7 +8,7 @@ async function getAdmissionFeeDetails(patientId: string) {
       is_paid: false,
     },
     orderBy: {
-      admittedDate: "desc",
+      admittedDate: "desc", 
     },
   })
 

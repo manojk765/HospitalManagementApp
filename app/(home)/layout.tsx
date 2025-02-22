@@ -14,7 +14,7 @@ export default function RootLayout({
   }) {
     return (
       <ClerkProvider>
-          <html lang="en">
+          <html lang="en" suppressHydrationWarning >
             <SideNav/>
             <body>
               <main className='ml-64 p-4'>

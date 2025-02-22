@@ -23,8 +23,13 @@ export async function GET(
       select: {
         patient_id: true,
         name: true,
-        email: true
-      }
+        email: true,
+        doctors: {
+          include: {
+            doctor: true,
+          },
+        },
+      },
     })
 
     if (!patient) {
