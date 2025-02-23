@@ -4,17 +4,26 @@ import Pagination from '@/components/pagination';
 import TableSearch from '@/components/tablesearch';
 import prisma from '@/lib/prisma';
 
-export default async function PatientsPage({
-  searchParams
-}: {
-  searchParams: {
-    page?: string;
-    search?: string;
-  }
-}) {
-  const page = parseInt(searchParams.page || '1', 10);
+
+type SearchParams = {
+  page?: string
+  search?: string
+}
+
+
+export default async function PatientsPage( 
+  {
+    searchParams,
+  }: {
+    searchParams:  Promise<SearchParams>
+  } 
+) {
+  const params = await searchParams
+
+
+  const page = parseInt(params.page || '1', 10);
   const itemsPerPage = 7;
-  const searchQuery = searchParams.search || '';
+  const searchQuery = params.search || '';
 
   const skip = (page - 1) * itemsPerPage;
 

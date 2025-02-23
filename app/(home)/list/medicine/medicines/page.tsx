@@ -4,17 +4,22 @@ import prisma from '@/lib/prisma';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function MedicineListPage({ 
-  searchParams 
-}: { 
-  searchParams: { 
-    page?: string; 
-    search?: string; 
-  } 
-}) {
-  const page = parseInt(searchParams.page || '1', 10);
+type SearchParams = {
+  page?: string
+  search?: string
+}
+
+export default async function MedicineListPage( 
+  {
+    searchParams,
+  }: {
+    searchParams:  Promise<SearchParams>
+  }
+) {
+  const params = await searchParams 
+  const page = parseInt(params.page || '1', 10);
   const itemsPerPage = 7;
-  const searchQuery = searchParams.search || ''; 
+  const searchQuery = params.search || ''; 
 
   const skip = (page - 1) * itemsPerPage;
 
