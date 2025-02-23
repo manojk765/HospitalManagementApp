@@ -1,14 +1,16 @@
 import EditExpenseForm from "./EditExpenseForm";
 
+// Update the type to reflect that params is a Promise
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function ExpensePage(props: PageProps) {
-  const { id } = await Promise.resolve(props.params);
+export default async function ExpensePage({ params }: PageProps) {
+  // Destructure params after awaiting
+  const { id } = await params;
   
   return <EditExpenseForm id={id} />;
 }
