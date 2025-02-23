@@ -10,8 +10,7 @@
       id: string;
     };
   }
-  
-  
+
   export default function EditExpense({ params }: PageProps ) {
     const router = useRouter();
     const { id } = params;
