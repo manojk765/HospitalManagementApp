@@ -5,11 +5,11 @@ import { NextResponse } from 'next/server';
   
   export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: number } }
   ) {
     try {
       const expense = await prisma.expense.findUnique({
-        where: { id: parseInt(params.id) },
+        where: { id: params.id },
       });
       if (expense) {
         return NextResponse.json(expense);
