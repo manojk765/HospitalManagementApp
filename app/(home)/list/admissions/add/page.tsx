@@ -221,19 +221,6 @@ export default function AdmissionPage() {
     if( !admission ){
       console.log("No Admission")
     }else{
-      const roomResponse = await fetch(`/api/rooms/${admission.room_id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ available: true }),
-      });
-
-      if (!roomResponse.ok) {
-        throw new Error('Failed to update room availability');
-      }
-
-      // Updating discharge Date in admissions
       try { 
         const response = await fetch(
           `/api/admissions/update?patientId=${admission.patient_id}&roomId=${admission.room_id}&admittedDate=${admission.admittedDate}`,
@@ -250,6 +237,18 @@ export default function AdmissionPage() {
         console.log(response)
       }catch(error){
         console.log(error)
+      }
+       
+      const roomResponse = await fetch(`/api/rooms/${admission.room_id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ available: true }),
+      });
+
+      if (!roomResponse.ok) {
+        throw new Error('Failed to update room availability');
       }
 
       const totalDays = Math.ceil(

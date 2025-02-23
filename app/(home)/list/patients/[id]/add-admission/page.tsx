@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
 interface Patient {
-  id: string
+  patient_id: string
   name: string
   email: string
 }
@@ -19,15 +19,15 @@ interface Room {
 }
 
 interface Admission {
-  patientId: string
-  roomId: string
+  patient_id: string
+  room_id: string
   admittedDate: string
   dischargeDate: string | null
 }
 
 interface AdmissionFormData {
-  patientId: string
-  roomId: string
+  patient_id: string
+  room_id: string
   admittedDate: string
 } 
 
@@ -79,13 +79,13 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
         const admissionsData = await admissionsResponse.json()
 
         setPatient({
-          id: patientData.patient_id,
+          patient_id: patientData.patient_id,
           name: patientData.name,
           email: patientData.email,
         })
 
         setRooms(
-          roomsData.map((room: any) => ({
+          roomsData.map((room: Room) => ({
             id: room.id,
             type: room.type,
             bedNumber: room.bedNumber,
@@ -95,7 +95,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
         )
 
         setAdmissions(
-          admissionsData.map((admission: any) => ({
+          admissionsData.map((admission: Admission) => ({
             patientId: admission.patient_id,
             roomId: admission.room_id,
             admittedDate: admission.admittedDate,
@@ -143,21 +143,9 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
       setError(null)
 
       const formData: AdmissionFormData = {
-        patientId: patientId,
-        roomId: selectedRoom,
+        patient_id: patientId,
+        room_id: selectedRoom,
         admittedDate,
-      }
-
-      const roomResponse = await fetch(`/api/rooms/${selectedRoom}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ available: false }),
-      })
-
-      if (!roomResponse.ok) {
-        throw new Error("Failed to update room availability")
       }
 
       const response = await fetch("/api/admissions", {
@@ -176,11 +164,23 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
         throw new Error(errorData.error || "Admission failed")
       }
 
+      const roomResponse = await fetch(`/api/rooms/${selectedRoom}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ available: false }),
+      })
+
+      if (!roomResponse.ok) {
+        throw new Error("Failed to update room availability")
+      }
+
       const today = new Date().toISOString().split("T")[0]
       setAdmittedDate(today)
       setSelectedRoom("")
       fetchUpdatedBookings()
-      router.push("/list/beds/add")
+      router.push(`/list/patients/${patient?.patient_id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Admission failed. Please try again.")
     } finally {
@@ -201,7 +201,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
     } else {
       try {
         const response = await fetch(
-          `/api/admissions/update?patientId=${admission.patientId}&roomId=${admission.roomId}&admittedDate=${admission.admittedDate}`,
+          `/api/admissions/update?patientId=${admission.patient_id}&roomId=${admission.room_id}&admittedDate=${admission.admittedDate}`,
           {
             method: "PUT",
             headers: {
@@ -212,11 +212,12 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
             }),
           },
         )
+        console.log(response)
       } catch (error) {
         console.log(error)
       }
 
-      const roomResponse = await fetch(`/api/rooms/${admission.roomId}`, {
+      const roomResponse = await fetch(`/api/rooms/${admission.room_id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -240,8 +241,8 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            patientId: admission.patientId,
-            roomId: admission.roomId,
+            patientId: admission.patient_id,
+            roomId: admission.room_id,
             admittedDate: admission.admittedDate,
             dischargeDate: dischargeDate,
             totalDays,
@@ -306,7 +307,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
         setTotalDays(days)
 
         // If room exists, update total cost based on daily rate
-        const room = rooms.find((r) => r.id === admission?.roomId)
+        const room = rooms.find((r) => r.id === admission?.room_id)
         if (room) {
           setTotalCost(days * room.dailyRate)
         }
@@ -331,7 +332,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
 
     if (!isOpen) return null
 
-    const room = rooms.find((r) => r.id === admission?.roomId)
+    const room = rooms.find((r) => r.id === admission?.room_id)
 
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -342,7 +343,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
             {/* Patient ID */}
             <label className="block font-medium mb-1">Patient Id</label>
             <input
-              value={admission?.patientId || ""}
+              value={admission?.patient_id || ""}
               disabled
               className="block w-full p-2 border border-gray-300 rounded-lg mb-4"
             />
@@ -459,7 +460,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
           </button>
 
           <p>
-            <strong>ID:</strong> {patient.id}
+            <strong>ID:</strong> {patient.patient_id}
           </p>
           <p>
             <strong>Name:</strong> {patient.name}
@@ -534,9 +535,9 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
             {admissions
               .filter((admission) => admission.dischargeDate === null)
               .map((admission) => {
-                const room = rooms.find((r) => r.id === admission.roomId)
+                const room = rooms.find((r) => r.id === admission.room_id)
                 return (
-                  <tr key={admission.patientId}>
+                  <tr key={admission.patient_id}>
                     <td className="px-4 py-2 border-b">{patient ? patient.name : "Unknown"}</td>
                     <td className="px-4 py-2 border-b">{room ? `${room.type} - ${room.bedNumber}` : "Unknown"}</td>
                     <td className="px-4 py-2 border-b">{formatDate(admission.admittedDate)}</td>
@@ -570,11 +571,11 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
           <tbody>
             {/* Map through admissions where dischargeDate is not null (discharged patients) */}
             {admissions
-              .filter((admission) => ( admission.dischargeDate !== null )&& (admission.patientId === patientId) )
+              .filter((admission) => ( admission.dischargeDate !== null )&& (admission.patient_id === patientId) )
               .map((admission) => {
-                const room = rooms.find((r) => r.id === admission.roomId)
+                const room = rooms.find((r) => r.id === admission.room_id)
                 return (
-                  <tr key={admission.patientId}>
+                  <tr key={admission.patient_id}>
                     <td className="px-4 py-2 border-b">{patient ? patient.name : "Unknown"}</td>
                     <td className="px-4 py-2 border-b">{room ? `${room.type} - ${room.bedNumber}` : "Unknown"}</td>
                     <td className="px-4 py-2 border-b">{formatDate(admission.admittedDate)}</td>

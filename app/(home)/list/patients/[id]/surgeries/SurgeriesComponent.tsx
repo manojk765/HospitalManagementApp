@@ -240,8 +240,7 @@ export default function SurgeriesComponent({ surgeries: initialSurgeries, patien
       }
     }, [surgery])
 
-    if (!surgery || !isOpen) return null
-
+    
     useEffect(() => {
       if (selectedSurgery && quantity > 0) {
         const cost = Number.parseFloat(selectedSurgery.cost.toString())
@@ -249,6 +248,8 @@ export default function SurgeriesComponent({ surgeries: initialSurgeries, patien
       }
     }, [quantity])
 
+    if (!surgery || !isOpen) return null
+    
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault()
 

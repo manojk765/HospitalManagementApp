@@ -222,8 +222,6 @@ export default function ServicesComponent({ services: initialServices, patientId
       const [totalCost, setTotalCost] = useState(Number(test?.total_cost || 0));
       const [canEditTotalCost, setCanEditTotalCost] = useState(false);
 
-      if (!test) return null; 
-  
       useEffect(() => {
         if (test) {
           setQuantity(test.quantity);
