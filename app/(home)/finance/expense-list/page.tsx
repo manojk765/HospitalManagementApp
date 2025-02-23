@@ -6,7 +6,7 @@ const PlaceholderComponent: React.FC = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg text-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">🚧 Under Development 🚧</h1>
         <p className="text-gray-600">
-          We're working hard to bring this feature to you. Please check back later!
+          We are working hard to bring this feature to you. Please check back later!
         </p>
         <button
           onClick={() => window.history.back()}

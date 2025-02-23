@@ -46,7 +46,7 @@ export default function EditExpenseForm({ id }: EditExpenseFormProps) {
     if (id) {
       fetchExpense();
     }
-  }, [id]);
+  }, [id, fetchExpense]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
