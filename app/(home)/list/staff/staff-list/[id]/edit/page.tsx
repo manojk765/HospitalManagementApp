@@ -9,7 +9,7 @@ interface Staff {
     role: string;
     contact_number: string;
     email: string;
-    shift_time: string;
+    shift_time: string; 
     department_name: string;
     salary: Decimal ;
     department: {
@@ -17,21 +17,6 @@ interface Staff {
     };
   }
   
-  interface StaffFormData {
-    staff_id: string;
-    name: string;
-    role: string;
-    contact_number: string;
-    email: string;
-    shift_time: string;
-    department_name: string;
-    salary: number;
-  }
-  
-  interface Department {
-    department_name: string;
-  }
-
 interface EditStaffPageProps {
   params: {
     id: string;

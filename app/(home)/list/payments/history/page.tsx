@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Trash2, Search } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import TableSearch from "@/components/tablesearch"
 
 interface Payment {

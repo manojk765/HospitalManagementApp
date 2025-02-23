@@ -1,6 +1,6 @@
 import { deleteTest } from "../action"
 import prisma from "@/lib/prisma"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 
 export default async function DeleteTestPage({ params }: { params: { test_name: string } }) {

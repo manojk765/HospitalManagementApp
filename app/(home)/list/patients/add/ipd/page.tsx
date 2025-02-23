@@ -22,7 +22,6 @@ export default function AddPatientForm() {
 
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
-  const [newPatientId, setNewPatientId] = useState('')
   const [doctors, setDoctors] = useState<{ doctor_id: string, name: string }[]>([])
 
   useEffect(() => {
@@ -69,7 +68,6 @@ export default function AddPatientForm() {
       const data = await response.json()
 
       if (response.ok) {
-        setNewPatientId(data.patient_id)
         setSuccessMessage('Patient added successfully! Patient ID: ' + data.patient_id)
 
         // Reset form

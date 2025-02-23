@@ -2,7 +2,7 @@
 
 import type {
   Patient,
-  Doctor,
+  Doctor, 
   PatientTests,
   PatientService,
   PatientSurgery,
@@ -10,7 +10,6 @@ import type {
   Payment,
 } from "@prisma/client"
 import Decimal from "decimal.js"
-import { useState } from "react"
 
 interface PatientBillProps {
   patient: Patient & { doctors: { doctor_id: string }[] }

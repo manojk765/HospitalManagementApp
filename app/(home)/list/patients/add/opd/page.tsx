@@ -23,6 +23,7 @@ export default function PatientForm() {
         const data = await response.json()
         setDoctors(data)
       } catch (error) {
+        console.log(error)
         setError('Failed to load doctors')
       }
     }
@@ -62,6 +63,7 @@ export default function PatientForm() {
         setError(data.error || 'Error creating patient record')
       }
     } catch (error) {
+      console.log(error)
       setError('An error occurred while creating the patient record')
     }
   }

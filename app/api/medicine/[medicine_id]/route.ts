@@ -67,15 +67,14 @@ export async function PUT(
 
 // DELETE Method - Delete a medicine
 export async function DELETE(
-  request: Request,
   context: { params: { medicine_id: string } }
 ) {
   try {
-    // const deleted = await prisma.medicine.delete({
-    //   where: {
-    //     medicine_id: parseInt(context.params.medicine_id),
-    //   },
-    // })
+    await prisma.medicine.delete({
+      where: {
+        medicine_id: parseInt(context.params.medicine_id),
+      },
+    })
 
     return NextResponse.json({
       message: 'Medicine deleted successfully',

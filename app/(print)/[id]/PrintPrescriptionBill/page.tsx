@@ -86,8 +86,13 @@
 //   );
 // }
 
-export default async function(){
-  return(
-    <h1>Currently On build</h1>
+import React from 'react'
+
+export default function() {
+  return (
+    <div>
+      <h1>Currently Under developement</h1>
+    </div>
   )
 }
+

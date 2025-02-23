@@ -1,6 +1,6 @@
 import { deleteSurgery } from "../action"
 import prisma from "@/lib/prisma"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 
 export default async function DeleteSurgeryPage({ params }: { params: { surgery_name: string } }) {

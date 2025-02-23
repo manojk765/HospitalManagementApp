@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MoreHorizontal, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Pagination from '@/components/pagination';
 import TableSearch from '@/components/tablesearch';
 import prisma from '@/lib/prisma';
