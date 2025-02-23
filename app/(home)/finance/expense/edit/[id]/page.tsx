@@ -4,8 +4,15 @@
   import { useState, useEffect } from 'react';
   import { useRouter } from 'next/navigation';
   import { ExpenseFormData } from '../../page';
+
+  interface PageProps {
+    params: {
+      id: string;
+    };
+  }
   
-  export default function EditExpense({ params }: { params: { id: string } }) {
+  
+  export default function EditExpense({ params }: PageProps ) {
     const router = useRouter();
     const { id } = params;
     
