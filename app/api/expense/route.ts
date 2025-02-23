@@ -3,60 +3,51 @@ import { NextResponse } from 'next/server';
   
   const prisma = new PrismaClient();
   
-  export async function GET(req: Request) {
-    try {
-      // Extract query parameters
-      const { searchParams } = new URL(req.url);
-      const searchDate = searchParams.get('date') || undefined;
-      const searchQuery = searchParams.get('search') || undefined;
-  
-      // Base query
-      let whereClause = {};
-  
-      // If a searchDate is provided, filter by that date
-      if (searchDate) {
-        whereClause = {
-          ...whereClause,
-          date: searchDate,
-        };
-      }
-  
-      if (searchQuery) {
-        whereClause = {
-          ...whereClause,
-          OR: [
-            {
-              title: {
-                contains: searchQuery,
-                mode: 'insensitive',
-              },
-            },
-            {
-              category: {
-                contains: searchQuery,
-                mode: 'insensitive',
-              },
-            },
-          ],
-        };
-      }
-  
-      const expenses = await prisma.expense.findMany({
-        where: whereClause,
-        orderBy: {
-          date: 'desc',
-        },
-      });
-  
-      return NextResponse.json(expenses);
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Error fetching expenses' },
-        { status: 500 }
-      );
+ 
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get('search');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
+
+    // Build the where clause based on search parameters
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search } },
+        { description: { contains: search } }
+      ];
     }
+
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) {
+        where.date.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.date.lte = new Date(endDate);
+      }
+    }
+
+    const expenses = await prisma.expense.findMany({
+      where,
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    return NextResponse.json(expenses);
+  } catch (error) {
+    console.error('Error fetching expenses:', error);
+    return NextResponse.json(
+      { error: 'Error fetching expenses' },
+      { status: 500 }
+    );
   }
-  
+}
+
   export async function POST(request: Request) {
     try {
       const body = await request.json();

@@ -20,7 +20,9 @@ async function getDoctorData(id: string) {
 
 async function getPatientTests(patientId: string) {
   const tests = await prisma.patientTests.findMany({
-    where: { patient_id: patientId },
+    where: { patient_id: patientId ,
+      is_paid:false
+    },
     orderBy: { test_date: "desc" },
   })
   return tests
@@ -28,7 +30,9 @@ async function getPatientTests(patientId: string) {
 
 async function getPatientServices(patientId: string) {
   const services = await prisma.patientService.findMany({
-    where: { patient_id: patientId },
+    where: { patient_id: patientId ,
+      is_paid:false
+    },
     orderBy: { service_date: "desc" },
   })
   return services
@@ -36,7 +40,9 @@ async function getPatientServices(patientId: string) {
 
 async function getPatientSurgeries(patientId: string) {
   const surgeries = await prisma.patientSurgery.findMany({
-    where: { patient_id: patientId },
+    where: { patient_id: patientId ,
+      is_paid:false
+    },
     orderBy: { surgery_date: "desc" },
   })
   return surgeries
@@ -44,7 +50,9 @@ async function getPatientSurgeries(patientId: string) {
 
 async function getAdmissionFee(patientId: string) {
   const admissionFee = await prisma.patientAdmissionFee.findMany({
-    where: { patient_id: patientId },
+    where: { patient_id: patientId ,
+      is_paid:false
+    },
     orderBy: { admittedDate: "desc" },
   });
   return admissionFee;
@@ -52,7 +60,9 @@ async function getAdmissionFee(patientId: string) {
 
 async function getPayments(patientId: string) {
   const payments = await prisma.payment.findMany({
-    where: { patient_id: patientId },
+    where: { patient_id: patientId ,
+      discharged:false
+    },
     orderBy: { payment_date: "desc" },
   });
   return payments;

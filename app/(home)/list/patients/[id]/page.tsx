@@ -8,6 +8,7 @@ import AdmissionComponent from '@/components/PatientAdmissions'
 import PatientAdmissionFee from "@/components/PatientAdmissionFee"
 import Link from "next/link"
 import PatientPaymentsPage from "@/components/PatientPayments"
+import PatientBillDisplay from "@/components/PatientBillInfo"
 
 async function getPatientData(id: string) {
   const patient = await prisma.patient.findUnique({
@@ -140,6 +141,10 @@ export default async function PatientPage({ params }: { params: { id: string } }
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit Payments</button>
           </Link>
         </div>
+      </section>
+
+      <section className="bg-white p-6 rounded-lg shadow-lg">
+        <PatientBillDisplay patientId={params.id} />
       </section>
     </div>
   )

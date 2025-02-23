@@ -1,9 +1,43 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function GET() {
+
+export async function GET(req: Request) {
     try {
+        const { searchParams } = new URL(req.url);
+        const search = searchParams.get('search');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+
+        let where: any = {};
+
+        if (search && search.trim() !== '') {
+            where.OR = [
+                { name: { contains: search, mode: 'insensitive' } },
+                { birth_id: { contains: search, mode: 'insensitive' } },
+                { patient_id: { contains: search, mode: 'insensitive' } },
+                { fatherName: { contains: search, mode: 'insensitive' } }
+            ];
+        }
+
+        // Only add date conditions if dates are provided and valid
+        if (startDate && startDate.trim() !== '' && endDate && endDate.trim() !== '') {
+            where.date = {
+                gte: new Date(startDate),
+                lte: new Date(endDate)
+            };
+        } else if (startDate && startDate.trim() !== '') {
+            where.date = {
+                gte: new Date(startDate)
+            };
+        } else if (endDate && endDate.trim() !== '') {
+            where.date = {
+                lte: new Date(endDate)
+            };
+        }
+
         const births = await prisma.birth.findMany({
+            where,
             select: {
                 birth_id: true,
                 patient_id: true,
@@ -14,15 +48,11 @@ export async function GET() {
                 typeofDelivery: true
             },
             orderBy: {
-                patient_id: 'desc'
+                date: 'desc'
             }
         });
 
-        return NextResponse.json(births, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        return NextResponse.json(births);
     } catch (error) {
         console.error("Error fetching births:", error);
         return NextResponse.json(
@@ -32,8 +62,7 @@ export async function GET() {
     }
 }
 
-
-export async function POST(request: Request) {
+export async function POST(request: Request) { 
     try {
         const body = await request.json();
         

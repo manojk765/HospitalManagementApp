@@ -6,6 +6,7 @@ async function getPatientPayments(patientId: string) {
   const payments = await prisma.payment.findMany({
     where: {
       patient_id: patientId,
+      discharged:false
     },
     orderBy: {
       payment_date: "desc",

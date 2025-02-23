@@ -92,7 +92,7 @@ const sidebarItems = [
       { title: "Bed Group", href: "/list/beds/list" },
       { title: "Add a new bed", href: "/list/beds/add" },
     ],
-    visible: ["admin", "staff"]
+    visible: ["admin"]
   },
   {
     title: "Services",
@@ -121,8 +121,8 @@ const sidebarItems = [
     title: "Finance",
     icon: Wallet,
     submenu: [
-      { title: "Add Expense", href: "/finance/expense" },
-      { title: "Expenses List", href: "/finance/expense-list" },
+      { title: "Expense Management", href: "/finance/expense" },
+      { title: "Income Management", href: "/finance/expense-list" },
     ],
     visible: ["admin"]
   }
