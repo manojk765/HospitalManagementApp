@@ -86,13 +86,13 @@
 //   );
 // }
 
-import React from 'react'
+import React from 'react';
 
-export default function() {
+export default function UnderDevelopment() {
   return (
     <div>
-      <h1>Currently Under developement</h1>
+      <h1>Currently Under Development</h1>
     </div>
-  )
+  );
 }
 

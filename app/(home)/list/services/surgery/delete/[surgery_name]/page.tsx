@@ -35,7 +35,7 @@ export default async function DeleteSurgeryPage({ params }: { params: { surgery_
         </div>
       ) : (
         <div>
-          <p>Are you sure you want to delete the surgery "{surgery.surgery_name}"?</p>
+          <p>Are you sure you want to delete the surgery {surgery.surgery_name}?</p>
           <form action={deleteSurgery} method="POST">
             <input type="hidden" name="surgery_name" value={surgery.surgery_name} />
             <button

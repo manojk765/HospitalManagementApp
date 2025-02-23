@@ -34,7 +34,7 @@ export default async function DeleteServicePage({ params }: { params: { service_
       ) : (
         // If there are no patients, show the delete confirmation
         <div>
-          <p>Are you sure you want to delete the service "{service.service_name}"?</p>
+          <p>Are you sure you want to delete the service {service.service_name}?</p>
           <form action={deleteService} method="POST">
             <input type="hidden" name="service_name" value={service.service_name} />
             <button

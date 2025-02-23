@@ -20,17 +20,17 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
+    const fetchDashboardData = async () => {
+      if (!startDate || !endDate) return
+  
+      const response = await fetch(`/api/dashboard?startDate=${startDate}&endDate=${endDate}`)
+      const data = await response.json()
+      setDashboardData(data)
+    }
+  
     fetchDashboardData()
   }, [startDate, endDate])
-
-  const fetchDashboardData = async () => {
-    if (!startDate || !endDate) return
-
-    const response = await fetch(`/api/dashboard?startDate=${startDate}&endDate=${endDate}`)
-    const data = await response.json()
-    setDashboardData(data)
-  }
-
+  
   return (
     <div className="space-y-8 p-6">
       <div className="flex items-center justify-between">
@@ -106,7 +106,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-gray-500" />
-                <span className="text-base font-medium">Today's Appointments</span>
+                <span className="text-base font-medium">Today&apos;s Appointments</span>
               </div>
               <span className="text-2xl font-bold text-gray-800">{dashboardData.todayAppointments}</span>
             </div>

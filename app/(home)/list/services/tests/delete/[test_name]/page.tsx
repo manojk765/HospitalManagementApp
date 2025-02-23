@@ -35,7 +35,7 @@ export default async function DeleteTestPage({ params }: { params: { test_name: 
         </div>
       ) : (
         <div>
-          <p>Are you sure you want to delete the service "{test.test_name}"?</p>
+          <p>Are you sure you want to delete the test {test.test_name}?</p>
           <form action={deleteTest} method="POST">
             <input type="hidden" name="test_name" value={test.test_name} />
             <button
