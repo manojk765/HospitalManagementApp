@@ -1,16 +1,25 @@
-import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// PUT Method - Update payment details
+export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Extract payment id from the request URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();  // Get the last part of the URL
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Payment ID not provided' },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
 
     const payment = await prisma.payment.update({
       where: {
-        payment_id: params.id,
+        payment_id: id,
       },
       data: {
         patient_id: body.patient_id,
@@ -18,35 +27,44 @@ export async function PUT(
         payment_method: body.payment_method,
         amount_paid: body.amount_paid,
       },
-    })
+    });
 
-    return NextResponse.json(payment)
+    return NextResponse.json(payment);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to update payment" },
       { status: 500 }
-    )
+    );
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// DELETE Method - Delete payment
+export async function DELETE(request: NextRequest) {
   try {
+    // Extract payment id from the request URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();  // Get the last part of the URL
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Payment ID not provided' },
+        { status: 400 }
+      );
+    }
+
     await prisma.payment.delete({
       where: {
-        payment_id: params.id,
+        payment_id: id,
       },
-    })
+    });
 
-    return NextResponse.json({ message: "Payment deleted successfully" })
+    return NextResponse.json({ message: "Payment deleted successfully" });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to delete payment" },
       { status: 500 }
-    )
+    );
   }
 }

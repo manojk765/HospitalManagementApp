@@ -2,12 +2,11 @@
 import { NextResponse } from 'next/server'
 import prisma  from '@/lib/prisma'
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request) {
   try {
-    const patientId = params.id
+    // Extract patient ID from the request URL
+    const url = new URL(request.url);
+    const patientId = url.pathname.split('/').pop();  // Get the last part of the URL
 
     if (!patientId) {
       return NextResponse.json(

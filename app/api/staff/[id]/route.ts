@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
 import { StaffFormData } from '../route';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+// PUT Method - Update staff member
+export async function PUT(request: NextRequest) {
   try {
-    const { id } = params;
+    // Extract staff id from the request URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();  // Get the last part of the URL
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Staff ID not provided' },
+        { status: 400 }
+      );
+    }
+
     const body: StaffFormData = await request.json();
     
     const staff = await prisma.staff.update({
@@ -37,9 +41,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+// DELETE Method - Delete staff member
+export async function DELETE(request: NextRequest) {
   try {
-    const { id } = params;
+    // Extract staff id from the request URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();  // Get the last part of the URL
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Staff ID not provided' },
+        { status: 400 }
+      );
+    }
     
     await prisma.staff.delete({
       where: { staff_id: id },
@@ -55,9 +69,20 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+// GET Method - Fetch staff member details
+export async function GET(request: NextRequest) {
   try {
-    const { id } = params;
+    // Extract staff id from the request URL
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();  // Get the last part of the URL
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Staff ID not provided' },
+        { status: 400 }
+      );
+    }
+
     const staff = await prisma.staff.findUnique({
       where: { staff_id: id },
       include: {
