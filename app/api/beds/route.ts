@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json(bed)
     } catch (error) {
       return NextResponse.json(
-        { error: "Failed to create bed" },
+        { error: `Failed to create bed ${error}` },
         { status: 500 }
       )
     }

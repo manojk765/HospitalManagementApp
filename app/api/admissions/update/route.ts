@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(admissions, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Unable to fetch admissions" }, { status: 500 });
+    return NextResponse.json({ error: `Unable to fetch admissions ${error}` }, { status: 500 });
   }
 }
 

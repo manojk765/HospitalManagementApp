@@ -17,6 +17,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 
     return NextResponse.json(department);
   } catch (error) {
+    console.error("Error is:", error);
     return NextResponse.json(
       { error: 'Error updating department' },
       { status: 500 }
@@ -57,6 +58,7 @@ export async function DELETE(request: Request, { params }: { params: Params }) {
 
     return NextResponse.json({ message: 'Department deleted successfully' });
   } catch (error) {
+    console.error("Error is:", error);
     return NextResponse.json(
       { error: 'Error deleting department' },
       { status: 500 }
@@ -84,6 +86,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
 
     return NextResponse.json(department);
   } catch (error) {
+    console.error("Error is:", error);
     return NextResponse.json(
       { error: 'Error fetching department' },
       { status: 500 }

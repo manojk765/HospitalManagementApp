@@ -57,7 +57,7 @@ export default function AdmissionList() {
           email: patient.email,
         }))
 
-        const formattedRoomsData = roomsData.map((room: any) => ({
+        const formattedRoomsData = roomsData.map((room: Room) => ({
           id: room.id,
           type: room.type,
           bedNumber: room.bedNumber,
@@ -65,7 +65,7 @@ export default function AdmissionList() {
           available: room.available,
         }))
 
-        const formattedAdmissionsData = admissionsData.map((admission: any) => ({
+        const formattedAdmissionsData = admissionsData.map((admission: Admission) => ({
           patient_id: admission.patient_id,
           room_id: admission.room_id,
           admittedDate: admission.admittedDate,

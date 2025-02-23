@@ -66,8 +66,12 @@ export default function NewMedicineForm() {
 
       router.push('/medicine/medicines');
       router.refresh();
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     } finally {
       setLoading(false);
     }

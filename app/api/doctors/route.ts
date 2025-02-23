@@ -13,6 +13,7 @@ export async function GET() {
 
     return new Response(JSON.stringify(doctors), { status: 200 });
   } catch (error) {
+    console.error("Error is:", error);
     return new Response('Failed to fetch doctors', { status: 500 });
   }
 }

@@ -10,6 +10,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     })
     return NextResponse.json(doctor)
   } catch (error) {
+    console.error("Error is:", error);
     return NextResponse.json({ error: "Error updating doctor" }, { status: 500 })
   }
 }

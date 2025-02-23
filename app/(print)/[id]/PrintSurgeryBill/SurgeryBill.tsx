@@ -1,7 +1,6 @@
 
 // SurgeriesPage.tsx
 "use client"
-import { useState } from "react"
 import { PatientSurgery } from "@prisma/client"
 
 interface SurgeriesPageProps {

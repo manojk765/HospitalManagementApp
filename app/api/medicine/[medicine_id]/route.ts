@@ -71,11 +71,11 @@ export async function DELETE(
   context: { params: { medicine_id: string } }
 ) {
   try {
-    const deleted = await prisma.medicine.delete({
-      where: {
-        medicine_id: parseInt(context.params.medicine_id),
-      },
-    })
+    // const deleted = await prisma.medicine.delete({
+    //   where: {
+    //     medicine_id: parseInt(context.params.medicine_id),
+    //   },
+    // })
 
     return NextResponse.json({
       message: 'Medicine deleted successfully',

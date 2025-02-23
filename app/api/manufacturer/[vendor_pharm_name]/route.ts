@@ -52,7 +52,7 @@ export async function PUT(
     }
 
     // Remove read-only fields from update data
-    const { created_at, updated_at, ...updateData } = data
+    const {  ...updateData } = data
 
     const updated = await prisma.manufacturer.update({
       where: { 

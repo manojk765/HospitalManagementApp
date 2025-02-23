@@ -21,7 +21,7 @@ export async function PUT(
     return NextResponse.json(bed)
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to update bed" },
+      { error: `Failed to update bed ${error}` },
       { status: 500 }
     )
   }
@@ -39,7 +39,7 @@ export async function DELETE(
     return NextResponse.json({ message: "Bed deleted successfully" })
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to delete bed" },
+      { error: `Failed to delete bed ${error}` },
       { status: 500 }
     )
   }

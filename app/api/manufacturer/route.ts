@@ -47,6 +47,7 @@ export async function GET() {
 
     return NextResponse.json(manufacturers);
   } catch (error) {
+    console.log("error:", error)
     return NextResponse.json({ error: 'Failed to fetch manufacturers' }, { status: 500 });
   }
 }

@@ -14,7 +14,7 @@ export async function DELETE(
         return NextResponse.json({ message: 'Birth record deleted successfully' });
     } catch (error) {
         return NextResponse.json(
-            { error: 'Failed to delete birth record' },
+            { error: `Failed to delete birth record ${error}` },
             { status: 500 }
         );
     }
@@ -71,7 +71,7 @@ export async function PUT(
         return NextResponse.json(birth);
     } catch (error) {
         return NextResponse.json(
-            { error: 'Failed to update birth record' },
+            { error: `Failed to update birth record ${error} ` },
             { status: 500 }
         );
     }

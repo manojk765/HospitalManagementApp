@@ -23,6 +23,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(department);
   } catch (error) {
+    console.error("Error is:", error);
     return NextResponse.json(
       { error: 'Error creating department' },
       { status: 500 }

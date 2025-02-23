@@ -7,9 +7,14 @@ export async function GET(req: NextRequest) {
     const date = searchParams.get('date');
     const patientId = searchParams.get('patientId');
 
-    let whereClause: any = {};
+    const whereClause: {
+      payment_date?: {
+        gte?: Date;
+        lte?: Date;
+      };
+      patient_id?: string;
+    } = {};
 
-    // If the date is provided, apply the date filter
     if (date) {
       const startDate = new Date(date);
       startDate.setHours(0, 0, 0, 0);
@@ -22,7 +27,7 @@ export async function GET(req: NextRequest) {
         lte: endDate,
       };
     }
-    
+
     if (patientId) {
       whereClause.patient_id = patientId;
     }
@@ -42,21 +47,21 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const formattedPayments = payments.map(payment => ({
+    const formattedPayments = payments.map((payment) => ({
       ...payment,
       patient_name: payment.patient.name,
     }));
 
     return NextResponse.json(formattedPayments);
-
   } catch (error) {
     console.error('Failed to fetch payments:', error);
     return NextResponse.json(
-      { error: "Failed to fetch payments" },
+      { error: 'Failed to fetch payments' },
       { status: 500 }
     );
   }
 }
+
 
 
 export async function POST(request: NextRequest) {

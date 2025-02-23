@@ -1,6 +1,5 @@
 // PaymentsPage.tsx
 "use client"
-import { useState } from "react"
 import { Payment } from "@prisma/client"
 
 interface PaymentsPageProps {

@@ -22,13 +22,26 @@ interface PatientBillProps {
   payments: Payment[]
 }
 
+// Base interface for items with a date field
+interface DateItem {
+  [key: string]: unknown
+}
+
+// Interface for grouped items
+interface GroupedItems<T extends DateItem> {
+  [date: string]: T[]
+}
+
 const formatCurrency = (value: number) => `₹${value.toFixed(2)}`
 
-const groupByDate = (items: any[], dateField: string) => {
-  return items.reduce((acc: { [key: string]: any[] }, item) => {
-    const date = new Date(item[dateField]).toLocaleDateString()
-    if (!acc[date]) acc[date] = []
-    acc[date].push(item)
+const groupByDate = <T extends DateItem>(items: T[], dateField: keyof T): GroupedItems<T> => {
+  return items.reduce((acc: GroupedItems<T>, item) => {
+    const dateValue = item[dateField]
+    if (dateValue instanceof Date || typeof dateValue === 'string') {
+      const date = new Date(dateValue).toLocaleDateString()
+      if (!acc[date]) acc[date] = []
+      acc[date].push(item)
+    }
     return acc
   }, {})
 }
@@ -48,8 +61,6 @@ export default function PatientBill({
   admissionFee,
   payments,
 }: PatientBillProps) {
-  const [activeTab, setActiveTab] = useState("tests")
-
   const admissionFeeTotal = admissionFee.length > 0 ? Number(admissionFee[0].totalCost) : 0
   const testsTotal = calculateTotal(tests)
   const servicesTotal = calculateTotal(services)
@@ -83,16 +94,16 @@ export default function PatientBill({
         <h2 className="text-xl font-semibold mb-2">Tests</h2>
         {tests.length > 0 ? (
           Object.entries(groupedTests).map(([date, items]) => (
-            <div key={date}>
+            <div key={date} className="mb-4">
               <h3 className="font-semibold">{date}</h3>
-              <div className="grid grid-cols-5 gap-4 text-center font-semibold">
+              <div className="grid grid-cols-4 gap-4 text-center font-semibold mb-2">
                 <span>Test Name</span>
                 <span>Quantity</span>
                 <span>Unit Price</span>
                 <span>Total Cost</span>
               </div>
               {items.map((test) => (
-                <div key={test.test_name} className="grid grid-cols-5 gap-4 text-center">
+                <div key={test.test_name} className="grid grid-cols-4 gap-4 text-center">
                   <span>{test.test_name}</span>
                   <span>{test.quantity}</span>
                   <span>{formatCurrency(Number(test.total_cost) / test.quantity)}</span>
@@ -111,16 +122,16 @@ export default function PatientBill({
         <h2 className="text-xl font-semibold mb-2">Services</h2>
         {services.length > 0 ? (
           Object.entries(groupedServices).map(([date, items]) => (
-            <div key={date}>
+            <div key={date} className="mb-4">
               <h3 className="font-semibold">{date}</h3>
-              <div className="grid grid-cols-5 gap-4 text-center font-semibold">
+              <div className="grid grid-cols-4 gap-4 text-center font-semibold mb-2">
                 <span>Service Name</span>
                 <span>Quantity</span>
                 <span>Unit Price</span>
                 <span>Total Cost</span>
               </div>
               {items.map((service) => (
-                <div key={service.service_name} className="grid grid-cols-5 gap-4 text-center">
+                <div key={service.service_name} className="grid grid-cols-4 gap-4 text-center">
                   <span>{service.service_name}</span>
                   <span>{service.quantity}</span>
                   <span>{formatCurrency(Number(service.total_cost) / service.quantity)}</span>
@@ -139,16 +150,16 @@ export default function PatientBill({
         <h2 className="text-xl font-semibold mb-2">Surgeries</h2>
         {surgeries.length > 0 ? (
           Object.entries(groupedSurgeries).map(([date, items]) => (
-            <div key={date}>
+            <div key={date} className="mb-4">
               <h3 className="font-semibold">{date}</h3>
-              <div className="grid grid-cols-5 gap-4 text-center font-semibold">
+              <div className="grid grid-cols-4 gap-4 text-center font-semibold mb-2">
                 <span>Surgery Name</span>
                 <span>Quantity</span>
                 <span>Unit Price</span>
                 <span>Total Cost</span>
               </div>
               {items.map((surgery) => (
-                <div key={surgery.surgery_name} className="grid grid-cols-5 gap-4 text-center">
+                <div key={surgery.surgery_name} className="grid grid-cols-4 gap-4 text-center">
                   <span>{surgery.surgery_name}</span>
                   <span>{surgery.quantity}</span>
                   <span>{formatCurrency(Number(surgery.total_cost) / surgery.quantity)}</span>
@@ -167,9 +178,9 @@ export default function PatientBill({
         <h2 className="text-xl font-semibold mb-2">Admissions</h2>
         {admissionFee.length > 0 ? (
           Object.entries(groupedAdmissions).map(([date, items]) => (
-            <div key={date}>
+            <div key={date} className="mb-4">
               <h3 className="font-semibold">{date}</h3>
-              <div className="grid grid-cols-5 gap-4 text-center font-semibold">
+              <div className="grid grid-cols-5 gap-4 text-center font-semibold mb-2">
                 <span>Room ID</span>
                 <span>Admitted Date</span>
                 <span>Discharge Date</span>
@@ -197,15 +208,15 @@ export default function PatientBill({
         <h2 className="text-xl font-semibold mb-2">Payments</h2>
         {payments.length > 0 ? (
           Object.entries(groupedPayments).map(([date, items]) => (
-            <div key={date}>
+            <div key={date} className="mb-4">
               <h3 className="font-semibold">{date}</h3>
-              <div className="grid grid-cols-5 gap-4 text-center font-semibold">
+              <div className="grid grid-cols-3 gap-4 text-center font-semibold mb-2">
                 <span>Payment ID</span>
                 <span>Payment Method</span>
                 <span>Amount Paid</span>
               </div>
               {items.map((payment) => (
-                <div key={payment.payment_id} className="grid grid-cols-5 gap-4 text-center">
+                <div key={payment.payment_id} className="grid grid-cols-3 gap-4 text-center">
                   <span>{payment.payment_id}</span>
                   <span>{payment.payment_method}</span>
                   <span>{formatCurrency(Number(payment.amount_paid))}</span>

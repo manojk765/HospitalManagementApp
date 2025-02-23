@@ -20,6 +20,7 @@ import { NextResponse } from 'next/server';
         );
       }
     } catch (error) {
+      console.error("Error is:", error);
       return NextResponse.json(
         { error: 'Error fetching expense' },
         { status: 500 }
@@ -43,6 +44,7 @@ import { NextResponse } from 'next/server';
       });
       return NextResponse.json(expense);
     } catch (error) {
+      console.error("Error is:", error);
       return NextResponse.json(
         { error: 'Error updating expense' },
         { status: 500 }
@@ -60,6 +62,7 @@ import { NextResponse } from 'next/server';
       });
       return new NextResponse(null, { status: 204 });
     } catch (error) {
+      console.error("Error is:", error);
       return NextResponse.json(
         { error: 'Error deleting expense' },
         { status: 500 }

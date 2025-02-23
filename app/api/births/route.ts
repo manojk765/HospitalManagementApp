@@ -1,38 +1,39 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
+import { Prisma } from '@prisma/client';
 
 export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
-        const search = searchParams.get('search');
-        const startDate = searchParams.get('startDate');
-        const endDate = searchParams.get('endDate');
+        const search = searchParams.get("search");
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
 
-        let where: any = {};
+        // Define the type for the 'where' condition
+        const where: Prisma.BirthWhereInput = {}; // Use Prisma.BirthWhereInput instead of any
 
-        if (search && search.trim() !== '') {
+        if (search && search.trim() !== "") {
             where.OR = [
-                { name: { contains: search, mode: 'insensitive' } },
-                { birth_id: { contains: search, mode: 'insensitive' } },
-                { patient_id: { contains: search, mode: 'insensitive' } },
-                { fatherName: { contains: search, mode: 'insensitive' } }
+                { name: { contains: search } },
+                { birth_id: { contains: search } },
+                { patient_id: { contains: search} },
+                { fatherName: { contains: search} },
             ];
         }
 
         // Only add date conditions if dates are provided and valid
-        if (startDate && startDate.trim() !== '' && endDate && endDate.trim() !== '') {
+        if (startDate && startDate.trim() !== "" && endDate && endDate.trim() !== "") {
             where.date = {
                 gte: new Date(startDate),
-                lte: new Date(endDate)
+                lte: new Date(endDate),
             };
-        } else if (startDate && startDate.trim() !== '') {
+        } else if (startDate && startDate.trim() !== "") {
             where.date = {
-                gte: new Date(startDate)
+                gte: new Date(startDate),
             };
-        } else if (endDate && endDate.trim() !== '') {
+        } else if (endDate && endDate.trim() !== "") {
             where.date = {
-                lte: new Date(endDate)
+                lte: new Date(endDate),
             };
         }
 
@@ -45,11 +46,11 @@ export async function GET(req: Request) {
                 gender: true,
                 fatherName: true,
                 date: true,
-                typeofDelivery: true
+                typeofDelivery: true,
             },
             orderBy: {
-                date: 'desc'
-            }
+                date: "desc",
+            },
         });
 
         return NextResponse.json(births);
@@ -61,6 +62,7 @@ export async function GET(req: Request) {
         );
     }
 }
+
 
 export async function POST(request: Request) { 
     try {
