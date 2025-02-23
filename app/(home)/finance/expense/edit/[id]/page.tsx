@@ -18,12 +18,6 @@
       description: '',
     });
   
-    useEffect(() => {
-      if (id) {
-        fetchExpense();
-      }
-    }, [id]);
-  
     const fetchExpense = async () => {
       try {
         const response = await fetch(`/api/expense/${id}`);
@@ -37,6 +31,12 @@
         console.error('Error fetching expense:', error);
       }
     };
+
+    useEffect(() => {
+      if (id) {
+        fetchExpense();
+      }
+    }, [id, fetchExpense]);
   
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();

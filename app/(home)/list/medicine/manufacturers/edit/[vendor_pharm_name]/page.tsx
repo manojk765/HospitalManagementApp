@@ -36,7 +36,7 @@ export default function EditManufacturer({
           setError(errorData.error || 'Failed to load manufacturer data')
         }
       } catch (err) {
-        setError('Failed to fetch manufacturer data')
+        setError(`Failed to fetch manufacturer data ${err}`)
       }
       setLoading(false)
     }
@@ -77,7 +77,7 @@ export default function EditManufacturer({
         setError(result.error || 'Failed to update manufacturer')
       }
     } catch (err) {
-      setError('Failed to update manufacturer')
+      setError(`Failed to update manufacturer ${err}`)
     }
   }
 

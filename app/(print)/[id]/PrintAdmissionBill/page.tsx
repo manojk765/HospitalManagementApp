@@ -1,6 +1,5 @@
-// app/patients/[id]/surgeries/page.tsx
 import prisma from "@/lib/prisma"
-import SurgeriesPage from "./SurgeryBill"
+import AdmissionsPage from "./AdmissionBill"
 
 async function getPatientData(id: string) {
   const patient = await prisma.patient.findUnique({
@@ -9,21 +8,21 @@ async function getPatientData(id: string) {
   return patient
 }
 
-async function getPatientSurgeries(patientId: string) {
-  const surgeries = await prisma.patientSurgery.findMany({
+async function getPatientAdmissions(patientId: string) {
+  const admissions = await prisma.patientAdmissionFee.findMany({
     where: { 
       patient_id: patientId,
       is_paid: false 
     },
-    orderBy: { surgery_date: "desc" }
+    orderBy: { admittedDate: "desc" }
   })
-  return surgeries
+  return admissions
 }
 
-export default async function PatientSurgeriesPage({ params }: { params: { id: string } }) {
+export default async function PatientAdmissionsPage({ params }: { params: { id: string } }) {
   const patientId = params.id
   const patient = await getPatientData(patientId)
-  const surgeries = await getPatientSurgeries(patientId)
+  const admissions = await getPatientAdmissions(patientId)
 
   if (!patient) {
     return (
@@ -34,8 +33,8 @@ export default async function PatientSurgeriesPage({ params }: { params: { id: s
   }
 
   return (
-    <SurgeriesPage 
-      surgeries={surgeries}
+    <AdmissionsPage 
+      admissions={admissions}
       patientName={patient.name}
       patientId={patient.patient_id}
     />

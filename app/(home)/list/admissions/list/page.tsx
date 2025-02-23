@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 
 interface Patient {
-  id: string
+  patient_id: string
   name: string
   email: string
 }
@@ -17,8 +17,8 @@ interface Room {
 }
 
 interface Admission {
-  patientId: string
-  roomId: string
+  patient_id: string
+  room_id: string
   admittedDate: string
   dischargeDate: string
 }
@@ -51,8 +51,8 @@ export default function AdmissionList() {
         const roomsData = await roomsResponse.json()
         const admissionsData = await admissionsResponse.json()
 
-        const formattedPatientsData = patientsData.map((patient: any) => ({
-          id: patient.patient_id,
+        const formattedPatientsData = patientsData.map((patient: Patient) => ({
+          patient_id : patient.patient_id,
           name: patient.name,
           email: patient.email,
         }))
@@ -66,8 +66,8 @@ export default function AdmissionList() {
         }))
 
         const formattedAdmissionsData = admissionsData.map((admission: any) => ({
-          patientId: admission.patient_id,
-          roomId: admission.room_id,
+          patient_id: admission.patient_id,
+          room_id: admission.room_id,
           admittedDate: admission.admittedDate,
           dischargeDate: admission.dischargeDate
         }))
@@ -171,10 +171,10 @@ export default function AdmissionList() {
                 </tr>
               ) : (
                 filteredAndSortedAdmissions.map((admission) => {
-                  const patient = patients.find((p) => p.id === admission.patientId)
-                  const room = rooms.find((r) => r.id === admission.roomId)
+                  const patient = patients.find((p) => p.patient_id === admission.patient_id)
+                  const room = rooms.find((r) => r.id === admission.room_id)
                   return (
-                    <tr key={`${admission.patientId}-${admission.admittedDate}`}>
+                    <tr key={`${admission.patient_id}-${admission.admittedDate}`}>
                       <td className="px-4 py-2 border-b">{patient ? patient.name : "Unknown"}</td>
                       <td className="px-4 py-2 border-b">
                         {room ? `${room.type} - ${room.bedNumber}` : "Unknown"}

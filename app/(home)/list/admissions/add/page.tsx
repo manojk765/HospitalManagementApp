@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
 interface Patient {
-  id: string
+  patient_id: string
   name: string
   email: string
 }
@@ -20,15 +20,15 @@ interface Room {
 }
 
 interface Admission {
-  patientId: string
-  roomId: string
+  patient_id: string
+  room_id: string
   admittedDate: string
   dischargeDate : string
 }
 
 interface AdmissionFormData {
-  patientId: string
-  roomId: string
+  patient_id: string
+  room_id: string
   admittedDate: string
 }
 
@@ -49,7 +49,7 @@ export default function AdmissionPage() {
     (patient) =>
       !searchQuery ||
       patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.id.toLowerCase().includes(searchQuery.toLowerCase())
+      patient.patient_id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const router = useRouter()
@@ -57,7 +57,7 @@ export default function AdmissionPage() {
   useEffect(() =>{
     const today = new Date().toISOString().split('T')[0]; 
     setAdmittedDate(today); 
-  })
+  },[])
 
   useEffect(() => {
     if (error) {
@@ -71,57 +71,57 @@ export default function AdmissionPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true)
-        setError(null)
-
+        setIsLoading(true);
+        setError(null);
+  
         const [patientsResponse, roomsResponse, admissionsResponse] = await Promise.all([
           fetch("/api/patient"),
           fetch("/api/rooms"),
           fetch("/api/admissions"),
-        ])
-
+        ]);
+  
         if (!patientsResponse.ok || !roomsResponse.ok || !admissionsResponse.ok) {
-          throw new Error("Failed to fetch data")
+          throw new Error("Failed to fetch data");
         }
-
-        const patientsData = await patientsResponse.json()
-        const roomsData = await roomsResponse.json()
-        const admissionsData = await admissionsResponse.json()
-
-        const formattedPatientsData = patientsData.map((patient: any) => ({
-          id: patient.patient_id,
+  
+        const patientsData: Patient[] = await patientsResponse.json();
+        const roomsData: Room[] = await roomsResponse.json();
+        const admissionsData: Admission[] = await admissionsResponse.json();
+  
+        const formattedPatientsData = patientsData.map((patient) => ({
+          patient_id : patient.patient_id,
           name: patient.name,
           email: patient.email,
-        }))
-
-        const formattedRoomsData = roomsData.map((room: any) => ({
+        }));
+  
+        const formattedRoomsData = roomsData.map((room) => ({
           id: room.id,
           type: room.type,
           bedNumber: room.bedNumber,
           dailyRate: room.dailyRate,
           available: room.available,
-        }))
-
-        const formattedAdmissionsData = admissionsData.map((admission: any) => ({
-          patientId: admission.patient_id,
-          roomId: admission.room_id,
+        }));
+  
+        const formattedAdmissionsData = admissionsData.map((admission) => ({
+          patient_id: admission.patient_id,
+          room_id: admission.room_id,
           admittedDate: admission.admittedDate,
-          dischargeDate : admission.dischargeDate
-        }))
-
-        setPatients(formattedPatientsData)
-        setRooms(formattedRoomsData)
-        setAdmissions(formattedAdmissionsData)
+          dischargeDate: admission.dischargeDate,
+        }));
+  
+        setPatients(formattedPatientsData);
+        setRooms(formattedRoomsData);
+        setAdmissions(formattedAdmissionsData);
       } catch (err) {
-        setError("Failed to load data. Please try again.")
-        console.error("Error fetching data:", err)
+        setError("Failed to load data. Please try again.");
+        console.error("Error fetching data:", err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-
-    fetchData()
-  }, [])
+    };
+  
+    fetchData();
+  }, []);
 
   const fetchUpdatedBookings = async () => {
     try{
@@ -129,9 +129,9 @@ export default function AdmissionPage() {
 
       const admissionsData = await admissionsResponse.json()
   
-      const formattedAdmissionsData = admissionsData.map((admission: any) => ({
-        patientId: admission.patient_id,
-        roomId: admission.room_id,
+      const formattedAdmissionsData = admissionsData.map((admission: Admission) => ({
+        patient_id: admission.patient_id,
+        room_id: admission.room_id,
         admittedDate: admission.admittedDate,
         dischargeDate : admission.dischargeDate
       }))
@@ -153,8 +153,8 @@ export default function AdmissionPage() {
       setError(null)
 
       const formData: AdmissionFormData = {
-        patientId: selectedPatient,
-        roomId: selectedRoom,
+        patient_id: selectedPatient,
+        room_id: selectedRoom,
         admittedDate,
       }
 
@@ -192,7 +192,7 @@ export default function AdmissionPage() {
       setSelectedPatient('');
       setSelectedRoom('') ;
       fetchUpdatedBookings() ;
-      router.push("/list/beds/add")
+      router.push("/list/admissions/add")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Admission failed. Please try again.")
     } finally {
@@ -221,7 +221,7 @@ export default function AdmissionPage() {
     if( !admission ){
       console.log("No Admission")
     }else{
-      const roomResponse = await fetch(`/api/rooms/${admission.roomId}`, {
+      const roomResponse = await fetch(`/api/rooms/${admission.room_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ export default function AdmissionPage() {
       // Updating discharge Date in admissions
       try { 
         const response = await fetch(
-          `/api/admissions/update?patientId=${admission.patientId}&roomId=${admission.roomId}&admittedDate=${admission.admittedDate}`,
+          `/api/admissions/update?patientId=${admission.patient_id}&roomId=${admission.room_id}&admittedDate=${admission.admittedDate}`,
           {
             method: 'PUT',
             headers: {
@@ -247,6 +247,7 @@ export default function AdmissionPage() {
             }),
           }
         );
+        console.log(response)
       }catch(error){
         console.log(error)
       }
@@ -264,8 +265,8 @@ export default function AdmissionPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            patientId: admission.patientId,
-            roomId: admission.roomId,
+            patient_id: admission.patient_id,
+            room_id: admission.room_id,
             admittedDate: admission.admittedDate,
             dischargeDate: dischargeDate,
             totalDays,
@@ -332,7 +333,7 @@ export default function AdmissionPage() {
         setTotalDays(days);
   
         // If room exists, update total cost based on daily rate
-        const room = rooms.find((r) => r.id === admission?.roomId);
+        const room = rooms.find((r) => r.id === admission?.room_id);
         if (room) {
           setTotalCost(days * room.dailyRate);
         }
@@ -357,7 +358,7 @@ export default function AdmissionPage() {
   
     if (!isOpen) return null;
   
-    const room = rooms.find((r) => r.id === admission?.roomId);
+    const room = rooms.find((r) => r.id === admission?.room_id);
   
     return (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -368,7 +369,7 @@ export default function AdmissionPage() {
             {/* Patient ID */}
             <label className="block font-medium mb-1">Patient Id</label>
             <input
-              value={admission?.patientId || ''}
+              value={admission?.patient_id || ''}
               disabled
               className="block w-full p-2 border border-gray-300 rounded-lg mb-4"
             />
@@ -503,8 +504,8 @@ function formatDate(dateString: string): string {
           >
             <option value="">Select a patient</option>
             {filteredPatients.map((patient) => (
-              <option key={patient.id} value={patient.id}>
-                {patient.id} - {patient.name}
+              <option key={patient.patient_id} value={patient.patient_id}>
+                {patient.patient_id} - {patient.name}
               </option>
             ))}
           </select>
@@ -573,10 +574,10 @@ function formatDate(dateString: string): string {
             {admissions
               .filter((admission) => admission.dischargeDate === null)
               .map((admission) => {
-                const patient = patients.find((p) => p.id === admission.patientId);
-                const room = rooms.find((r) => r.id === admission.roomId);
+                const patient = patients.find((p) => p.patient_id === admission.patient_id);
+                const room = rooms.find((r) => r.id === admission.room_id);
                 return (
-                  <tr key={admission.patientId}>
+                  <tr key={admission.patient_id}>
                     <td className="px-4 py-2 border-b">{patient ? patient.name : "Unknown"}</td>
                     <td className="px-4 py-2 border-b">
                       {room ? `${room.type} - ${room.bedNumber}` : "Unknown"}

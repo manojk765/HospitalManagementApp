@@ -116,7 +116,7 @@ export default async function PatientPage({ params }: { params: { id: string } }
       <section className="bg-white p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Admissions</h2>
-          <Link href={`/${patient.patient_id}/PrintAdmissionFee`} target="_blank" rel="noopener noreferrer">
+          <Link href={`/${patient.patient_id}/PrintAdmissionBill`} target="_blank" rel="noopener noreferrer">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Print Admission Fees</button>
           </Link>
         </div>
@@ -131,8 +131,8 @@ export default async function PatientPage({ params }: { params: { id: string } }
       <section className="bg-white p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Payments</h2>
-          <Link href={`/${patient.patient_id}/PrintAdmissionFee`} target="_blank" rel="noopener noreferrer">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Print Admission Fees</button>
+          <Link href={`/${patient.patient_id}/PrintPayments`} target="_blank" rel="noopener noreferrer">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Print Payment Details</button>
           </Link>
         </div>
         <PatientPaymentsPage patientId={params.id} />

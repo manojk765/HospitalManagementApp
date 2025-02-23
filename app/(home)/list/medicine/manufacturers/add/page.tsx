@@ -46,7 +46,7 @@ export default function AddManufacturer() {
         setError(result.error || 'Failed to add manufacturer') // Display error message
       }
     } catch (error) {
-      setError('An error occurred while adding the manufacturer. Please try again.') // Handle fetch error
+      setError(`An error occurred while adding the manufacturer. Error: ${error}`) // Handle fetch error
     }
   }
 

@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-// import { useRouter } from "next/router";
 import { Search, Calendar } from "lucide-react";
-import Pagination from "@/components/pagination";
 
 interface BirthReport {
   birth_id: string;
@@ -17,44 +15,39 @@ interface BirthReport {
 }
 
 export default function BirthReportListPage() {
-  // const router = useRouter();
   const [birthReports, setBirthReports] = useState<BirthReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [page, setPage] = useState<number>(1);
-  const itemsPerPage = 7;
-  const skip = (page - 1) * itemsPerPage;
-
-  const fetchBirthReports = async () => {
-    setLoading(true);
-    try {
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        search: searchQuery,
-        startDate: startDate,
-        endDate: endDate
-      });
-
-      const response = await fetch(`/api/births?${queryParams.toString()}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch birth reports");
-      }
-      const data = await response.json();
-      setBirthReports(data);
-    } catch (err) {
-      setError("Failed to fetch birth reports");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const fetchBirthReports = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams({
+          search: searchQuery,
+          startDate: startDate,
+          endDate: endDate,
+        });
+
+        const response = await fetch(`/api/births?${queryParams.toString()}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch birth reports");
+        }
+        const data = await response.json();
+        setBirthReports(data);
+      } catch (err) {
+        setError("Failed to fetch birth reports");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchBirthReports();
-  }, [page, searchQuery, startDate, endDate]);
+  }, [searchQuery, startDate, endDate]);
 
   const handleDelete = async (birth_id: string) => {
     if (window.confirm("Are you sure you want to delete this birth record?")) {
@@ -67,7 +60,9 @@ export default function BirthReportListPage() {
           throw new Error("Failed to delete birth record");
         }
 
-        fetchBirthReports();
+        setBirthReports((prev) =>
+          prev.filter((report) => report.birth_id !== birth_id)
+        );
       } catch (error) {
         console.error("Error deleting birth:", error);
         setError("Failed to delete birth record");
@@ -84,6 +79,7 @@ export default function BirthReportListPage() {
   }
 
   return (
+    <>
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -110,7 +106,7 @@ export default function BirthReportListPage() {
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           </div>
-          
+
           <div className="relative">
             <input
               type="date"
@@ -120,7 +116,7 @@ export default function BirthReportListPage() {
             />
             <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           </div>
-          
+
           <div className="relative">
             <input
               type="date"
@@ -162,7 +158,7 @@ export default function BirthReportListPage() {
                   </td>
                 </tr>
               ) : (
-                birthReports.slice(skip, skip + itemsPerPage).map((report) => (
+                birthReports.map((report) => (
                   <tr key={report.birth_id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">{report.birth_id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{report.patient_id}</td>
@@ -176,7 +172,7 @@ export default function BirthReportListPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex space-x-2">
                         <button
-                          onClick={() =>  window.location.href = (`/list/hospital/edit-birth/${report.birth_id}`)}
+                          onClick={() => window.location.href = (`/list/hospital/edit-birth/${report.birth_id}`)}
                           className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
                         >
                           Edit
@@ -195,20 +191,8 @@ export default function BirthReportListPage() {
             </tbody>
           </table>
         </div>
-
-        <div className="px-6 py-4 border-t">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500">
-              Showing {skip + 1} to {Math.min(skip + itemsPerPage, birthReports.length)} of {birthReports.length} entries
-            </div>
-            {/* <Pagination
-              page={page}
-              count={Math.ceil(birthReports.length / itemsPerPage)}
-              onChange={(newPage) => setPage(newPage)}
-            /> */}
-          </div>
-        </div>
       </div>
     </div>
+    </>
   );
 }

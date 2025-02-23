@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Manufacturer } from '@prisma/client'
 
 export default function EditMedicine({ params }: { params: { medicine_id: string } }) {
   const router = useRouter()
@@ -47,7 +48,7 @@ export default function EditMedicine({ params }: { params: { medicine_id: string
           setError(errorData.error || 'Failed to load medicine data')
         }
       } catch (err) {
-        setError('Failed to fetch medicine data')
+        setError(`Failed to fetch medicine data ${err}`)
       }
       setLoading(false)
     }
@@ -78,7 +79,7 @@ export default function EditMedicine({ params }: { params: { medicine_id: string
         setError(result.error || 'Failed to update medicine')
       }
     } catch (err) {
-      setError('Failed to update medicine')
+      setError(`Failed to update medicine ${err}`)
     }
   }
 
@@ -189,8 +190,8 @@ export default function EditMedicine({ params }: { params: { medicine_id: string
 
             {/* List other manufacturers as suggestions */}
             {manufacturers
-              .filter((manufacturer: any) => manufacturer.vendor_pharm_name !== formData.manufacturer_name)
-              .map((manufacturer: any) => (
+              .filter((manufacturer: Manufacturer) => manufacturer.vendor_pharm_name !== formData.manufacturer_name)
+              .map((manufacturer: Manufacturer) => (
                 <option key={manufacturer.vendor_pharm_name} value={manufacturer.vendor_pharm_name}>
                   {manufacturer.vendor_pharm_name}
                 </option>

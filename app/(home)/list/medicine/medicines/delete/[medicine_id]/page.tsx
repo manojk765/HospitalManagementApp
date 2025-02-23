@@ -32,7 +32,7 @@ export default function DeleteMedicine({
           setError(errorData.error || 'Failed to load medicine data')
         }
       } catch (err) {
-        setError('Failed to fetch medicine data')
+        setError(`Failed to fetch medicine data ${err}`)
       }
       setLoading(false)
     }
@@ -61,7 +61,7 @@ export default function DeleteMedicine({
         setError(errorData.error || 'Failed to delete medicine')
       }
     } catch (err) {
-      setError('Failed to delete medicine')
+      setError(`Failed to delete medicine ${err}`)
     }
     setIsDeleting(false)
   }

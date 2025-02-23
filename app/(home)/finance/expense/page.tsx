@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import {useCallback , useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Calendar } from 'lucide-react';
 
@@ -31,11 +31,7 @@ export default function ExpenseList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, [searchTerm, startDate, endDate]);
-
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -56,7 +52,11 @@ export default function ExpenseList() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchTerm, startDate, endDate]); // Dependencies for fetchExpenses
+
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
 
   const deleteExpense = async (id: number) => {
     try {

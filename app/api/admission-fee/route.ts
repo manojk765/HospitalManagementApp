@@ -4,13 +4,13 @@ import prisma from '@/lib/prisma';
 export async function POST(request: Request) {
     try {
         // Parse JSON body from request
-        const { patientId, roomId, admittedDate, dischargeDate, totalDays, totalCost } = await request.json();
+        const { patient_id, room_id, admittedDate, dischargeDate, totalDays, totalCost } = await request.json();
         
         // Insert the new PatientAdmissionFee entry
         const newAdmissionFee = await prisma.patientAdmissionFee.create({
           data: {
-            patient_id: patientId,
-            room_id: roomId,
+            patient_id: patient_id,
+            room_id: room_id,
             admittedDate: new Date(admittedDate),
             dischargeDate: new Date(dischargeDate),
             totalDays,

@@ -27,9 +27,9 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { patientId, roomId, admittedDate } = body;
+    const { patient_id, room_id, admittedDate } = body;
 
-    if (!patientId || !roomId || !admittedDate) {
+    if (!patient_id || !room_id || !admittedDate) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     // Check if the patient is already admitted
     const existingAdmission = await prisma.admission.findFirst({
       where: {
-        patient_id: patientId,
+        patient_id: patient_id,
         dischargeDate: null,
       },
     });
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     // Check for the patient's previous admission and ensure admittedDate is valid
     const previousAdmission = await prisma.admission.findFirst({
       where: {
-        patient_id: patientId,
+        patient_id: patient_id,
         dischargeDate: {
           not: null,
         },
@@ -80,8 +80,8 @@ export async function POST(request: Request) {
     // Proceed to create a new admission
     const newAdmission = await prisma.admission.create({
       data: {
-        patient_id: patientId,
-        room_id: parseInt(roomId),
+        patient_id: patient_id,
+        room_id: parseInt(room_id),
         admittedDate: admittedDateParsed,
         dischargeDate: null, // Not discharged yet
       },
