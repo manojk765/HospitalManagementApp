@@ -25,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const data = await request.json()
+  const data = await request.json();
   try {
     const service = await prisma.services.create({
       data: {
@@ -33,15 +33,16 @@ export async function POST(request: Request) {
         description: data.description,
         cost: Number.parseFloat(data.cost),
       },
-    })
-    return NextResponse.json(service)
+    });
+    return NextResponse.json(service);
   } catch (error) {
-    return NextResponse.json({ error: "Error creating service" }, { status: 500 })
+    console.error("Error creating service:", error);  // Log the error
+    return NextResponse.json({ error: "Error creating service" }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
-  const data = await request.json()
+  const data = await request.json();
   try {
     const service = await prisma.services.update({
       where: { service_name: data.service_name },
@@ -49,26 +50,27 @@ export async function PUT(request: Request) {
         description: data.description,
         cost: Number.parseFloat(data.cost),
       },
-    })
-    return NextResponse.json(service)
+    });
+    return NextResponse.json(service);
   } catch (error) {
-    return NextResponse.json({ error: "Error updating service" }, { status: 500 })
+    console.error("Error updating service:", error);  // Log the error
+    return NextResponse.json({ error: "Error updating service" }, { status: 500 });
   }
 }
 
 export async function DELETE(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const service_name = searchParams.get("service_name")
+  const { searchParams } = new URL(request.url);
+  const service_name = searchParams.get("service_name");
   if (!service_name) {
-    return NextResponse.json({ error: "Service name is required" }, { status: 400 })
+    return NextResponse.json({ error: "Service name is required" }, { status: 400 });
   }
   try {
     await prisma.services.delete({
       where: { service_name },
-    })
-    return NextResponse.json({ message: "Service deleted successfully" })
+    });
+    return NextResponse.json({ message: "Service deleted successfully" });
   } catch (error) {
-    return NextResponse.json({ error: "Error deleting service" }, { status: 500 })
+    console.error("Error deleting service:", error);  // Log the error
+    return NextResponse.json({ error: "Error deleting service" }, { status: 500 });
   }
 }
-

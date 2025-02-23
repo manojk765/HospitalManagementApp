@@ -1,12 +1,3 @@
-import type {
-  Patient,
-  Doctor,
-  PatientTests,
-  PatientService,
-  PatientSurgery,
-  PatientAdmissionFee,
-  Payment,
-} from "@prisma/client"
 import Decimal from "decimal.js"
 import prisma from "@/lib/prisma"
 

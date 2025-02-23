@@ -29,6 +29,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json(staff);
   } catch (error) {
+    console.error("Error updating staff member:", error);  // Log the error
     return NextResponse.json(
       { error: 'Error updating staff member' },
       { status: 500 }
@@ -46,6 +47,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ message: 'Staff member deleted successfully' });
   } catch (error) {
+    console.error("Error deleting staff member:", error);  // Log the error
     return NextResponse.json(
       { error: 'Error deleting staff member' },
       { status: 500 }
@@ -72,6 +74,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json(staff);
   } catch (error) {
+    console.error("Error fetching staff member:", error);  // Log the error
     return NextResponse.json(
       { error: 'Error fetching staff member' },
       { status: 500 }

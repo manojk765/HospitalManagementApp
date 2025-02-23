@@ -17,7 +17,7 @@ export async function GET(
     return NextResponse.json(services);
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch services' },
+      { error: `Failed to fetch services ${error}` },
       { status: 500 }
     );
   }
