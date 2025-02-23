@@ -1,14 +1,11 @@
 import EditExpenseForm from "./EditExpenseForm";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+type Params = Promise<{ id : string }>
 
-export default async function ExpensePage({ params }: PageProps) {
-  const { id } = params;
+export default async function ExpensePage( props : { params : Params } ) {
+  const params = await props.params;
+  
+  const id  = params.id;
   
   return <EditExpenseForm id={id} />;
 }
