@@ -119,7 +119,7 @@ export default function AdmissionPage({ params }: { params: { id: string } }) {
 
       const admissionsData = await admissionsResponse.json()
 
-      const formattedAdmissionsData = admissionsData.map((admission: any) => ({
+      const formattedAdmissionsData = admissionsData.map((admission: Admission) => ({
         patientId: admission.patient_id,
         roomId: admission.room_id,
         admittedDate: admission.admittedDate,

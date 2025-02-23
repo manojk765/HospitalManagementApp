@@ -228,9 +228,7 @@ export default function ServicesComponent({ services: initialServices, patientId
           setTotalCost(Number(test.total_cost));
         }
       }, [test]);
-    
-      if (!test || !isOpen) return null;
-    
+
       
       useEffect(() => {
         if (selectedService && quantity > 0) {
@@ -239,7 +237,8 @@ export default function ServicesComponent({ services: initialServices, patientId
         }
       }, [ quantity]);
     
-      
+      if (!test || !isOpen) return null;
+    
       const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
       
