@@ -218,11 +218,11 @@ export default function ServicesComponent({ services: initialServices, patientId
     };
     
     const Modal = ({ isOpen, onClose, test, onSave }: { isOpen: boolean, onClose: ( ) => void, test: GroupedService | null , onSave: (updatedData: GroupedService) => void }) => {
-      if (!test) return null; 
-  
       const [quantity, setQuantity] = useState(test?.quantity || 1);
       const [totalCost, setTotalCost] = useState(Number(test?.total_cost || 0));
       const [canEditTotalCost, setCanEditTotalCost] = useState(false);
+
+      if (!test) return null; 
   
       useEffect(() => {
         if (test) {
@@ -239,7 +239,7 @@ export default function ServicesComponent({ services: initialServices, patientId
           const cost = parseFloat(selectedService.cost.toString());
           setTotalCost(cost * quantity);
         }
-      }, [selectedService, quantity]);
+      }, [ quantity]);
     
       
       const handleSubmit = (e: React.FormEvent) => {

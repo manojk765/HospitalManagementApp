@@ -1,7 +1,7 @@
 "use client"
 
 import Decimal from "decimal.js"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Trash2, Edit2, Search, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -82,16 +82,26 @@ export default function PatientPaymentsPage({ params }: { params: { id: string }
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     setPaymentDate(today);
-    // setSearchDate(today);
   }, []);
+
+  const fetchPayments = useCallback(async (date: string) => {
+    try {
+      const response = await fetch(`/api/payments?date=${date}&patientId=${patientId}`);
+      if (!response.ok) throw new Error("Failed to fetch payments");
+      const data = await response.json();
+      setPayments(data);
+    } catch (err) {
+      setError("Failed to load payments. Please try again later.");
+      console.error(err);
+    }
+  }, [patientId]); 
   
   useEffect(() => {
     if (searchDate || patientId) {
       fetchPayments(searchDate);
     }
-  }, [searchDate, patientId]); 
+  }, [searchDate, patientId, fetchPayments]);
   
-
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => setError(null), 3000)
@@ -106,17 +116,7 @@ export default function PatientPaymentsPage({ params }: { params: { id: string }
     }
   }, [successMessage])
 
-  const fetchPayments = async (date: string) => {
-    try {
-      const response = await fetch(`/api/payments?date=${date}&patientId=${patientId}`)
-      if (!response.ok) throw new Error("Failed to fetch payments")
-      const data = await response.json()
-      setPayments(data)
-    } catch (err) {
-      setError("Failed to load payments. Please try again later.")
-      console.error(err)
-    }
-  }
+  
 
   // useEffect(() =>{
   //   fetchPayments(searchDate)

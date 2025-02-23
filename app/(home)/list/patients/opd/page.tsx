@@ -1,7 +1,7 @@
 "use client";
 
 import Decimal from "decimal.js";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface Patient {
   id: string;
@@ -23,16 +23,25 @@ export default function DailyVisitLog() {
 
   useEffect(() => {
     fetchPatients();
-  }, []); // Fetch all patients on initial load
+  }, []); 
 
+  const applyDateFilter = useCallback(() => {
+    if (!date) return;
+    
+    const filtered = patients.filter(
+      (patient) => new Date(patient.visitDate).toISOString().split("T")[0] === date
+    );
+    setFilteredPatients(filtered);
+  }, [date, patients]);  // Dependencies
+  
   useEffect(() => {
     if (date) {
       applyDateFilter();
     } else {
-      setFilteredPatients(patients); // If no date is selected, show all patients
+      setFilteredPatients(patients); 
     }
-  }, [date, patients]);
-
+  }, [date, patients, applyDateFilter]); 
+  
   const fetchPatients = async () => {
     try {
       const response = await fetch("/api/opd-patients");
@@ -48,12 +57,7 @@ export default function DailyVisitLog() {
     }
   };
 
-  const applyDateFilter = () => {
-    const filtered = patients.filter(
-      (patient) => new Date(patient.visitDate).toISOString().split("T")[0] === date
-    );
-    setFilteredPatients(filtered);
-  };
+  
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);

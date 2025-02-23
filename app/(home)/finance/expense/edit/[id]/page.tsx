@@ -18,26 +18,26 @@
       description: '',
     });
   
-    const fetchExpense = async () => {
-      try {
-        const response = await fetch(`/api/expense/${id}`);
-        const data = await response.json();
-        setFormData({
-          ...data,
-          amount: data.amount.toString(),
-          date: new Date(data.date).toISOString().split('T')[0],
-        });
-      } catch (error) {
-        console.error('Error fetching expense:', error);
-      }
-    };
-
     useEffect(() => {
+      const fetchExpense = async () => {
+        try {
+          const response = await fetch(`/api/expense/${id}`);
+          const data = await response.json();
+          setFormData({
+            ...data,
+            amount: data.amount.toString(),
+            date: new Date(data.date).toISOString().split('T')[0],
+          });
+        } catch (error) {
+          console.error('Error fetching expense:', error);
+        }
+      };
+    
       if (id) {
         fetchExpense();
       }
-    }, [id, fetchExpense]);
-  
+    }, [id]);
+      
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       try {

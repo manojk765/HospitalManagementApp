@@ -173,7 +173,7 @@ export default function SurgeriesComponent({ surgeries: initialSurgeries, patien
     } finally {
       setIsSubmitting(false)
     }
-  }
+  } 
 
   const handleEditClick = (surgery: GroupedSurgery) => {
     setEditingSurgery(surgery)
@@ -247,7 +247,7 @@ export default function SurgeriesComponent({ surgeries: initialSurgeries, patien
         const cost = Number.parseFloat(selectedSurgery.cost.toString())
         setTotalCost(cost * quantity)
       }
-    }, [selectedSurgery, quantity])
+    }, [quantity])
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault()
