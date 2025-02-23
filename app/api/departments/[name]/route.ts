@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-interface Params {
-  name: string;
-}
-
-export async function PUT(request: Request, { params }: { params: Params }) {
+// PUT request handler
+export async function PUT(request: Request) {
   try {
-    const { name } = params;
+    const url = new URL(request.url);
+    const name = decodeURIComponent(url.pathname.split("/").pop() || ""); // Extract and decode the department name
+
+    if (!name) {
+      return NextResponse.json({ error: 'Department name is missing' }, { status: 400 });
+    }
+
     const body = await request.json();
     
     const department = await prisma.department.update({
@@ -25,9 +28,15 @@ export async function PUT(request: Request, { params }: { params: Params }) {
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Params }) {
+// DELETE request handler
+export async function DELETE(request: Request) {
   try {
-    const { name } = params;
+    const url = new URL(request.url);
+    const name = decodeURIComponent(url.pathname.split("/").pop() || ""); // Extract and decode the department name
+
+    if (!name) {
+      return NextResponse.json({ error: 'Department name is missing' }, { status: 400 });
+    }
     
     // Check if department has any doctors or staff
     const department = await prisma.department.findUnique({
@@ -66,9 +75,16 @@ export async function DELETE(request: Request, { params }: { params: Params }) {
   }
 }
 
-export async function GET(request: Request, { params }: { params: Params }) {
+// GET request handler
+export async function GET(request: Request) {
   try {
-    const { name } = params;
+    const url = new URL(request.url);
+    const name = decodeURIComponent(url.pathname.split("/").pop() || ""); // Extract and decode the department name
+
+    if (!name) {
+      return NextResponse.json({ error: 'Department name is missing' }, { status: 400 });
+    }
+
     const department = await prisma.department.findUnique({
       where: { department_name: name },
       include: {

@@ -1,27 +1,44 @@
-import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request) {
   try {
-    const body = await request.json()
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop(); // Extract doctor ID from the URL
+
+    if (!id) {
+      return NextResponse.json({ error: "Doctor ID is missing" }, { status: 400 });
+    }
+
+    const body = await request.json();
+
     const doctor = await prisma.doctor.update({
-      where: { doctor_id: params.id },
+      where: { doctor_id: id },
       data: body,
-    })
-    return NextResponse.json(doctor)
+    });
+
+    return NextResponse.json(doctor);
   } catch (error) {
-    console.error("Error is:", error);
-    return NextResponse.json({ error: "Error updating doctor" }, { status: 500 })
+    console.error("Error updating doctor:", error);
+    return NextResponse.json({ error: "Error updating doctor" }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+// DELETE request handler
+export async function DELETE(request: Request) {
   try {
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop(); // Extract doctor ID from the URL
+
+    if (!id) {
+      return NextResponse.json({ error: "Doctor ID is missing" }, { status: 400 });
+    }
+
     const doctor = await prisma.doctor.findUnique({
-      where: { doctor_id: params.id },
+      where: { doctor_id: id },
       include: {
-        prescriptions: true, 
-        patients: true,      
+        prescriptions: true,
+        patients: true,
       },
     });
 
@@ -37,7 +54,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     }
 
     await prisma.doctor.delete({
-      where: { doctor_id: params.id },
+      where: { doctor_id: id },
     });
 
     return NextResponse.json({ message: "Doctor deleted successfully" });
@@ -46,4 +63,3 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: "Error deleting doctor" }, { status: 500 });
   }
 }
-

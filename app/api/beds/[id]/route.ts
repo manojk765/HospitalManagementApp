@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request) {
   try {
+    const url = new URL(request.url)
+    const id = url.pathname.split("/").pop() 
+    
     const data = await request.json()
     
     const bed = await prisma.beds.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id || "0") }, 
       data: {
         type: data.type,
         bedNumber: data.bedNumber,
@@ -27,13 +27,13 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request) {
   try {
+    const url = new URL(request.url)
+    const id = url.pathname.split("/").pop() 
+    
     await prisma.beds.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id || "0") },
     })
     
     return NextResponse.json({ message: "Bed deleted successfully" })

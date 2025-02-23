@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function DELETE(
-    request: Request,
-    { params }: { params: { birth_id: string } }
-) {
+// DELETE request handler
+export async function DELETE(request: Request) {
     try {
+        const url = new URL(request.url);
+        const birth_id = url.pathname.split("/").pop(); // Extract the birth_id from the URL
+
+        if (!birth_id) {
+            return NextResponse.json({ error: 'Birth ID is missing' }, { status: 400 });
+        }
+
         await prisma.birth.delete({
             where: {
-                birth_id: params.birth_id,
+                birth_id: birth_id,
             },
         });
+
         return NextResponse.json({ message: 'Birth record deleted successfully' });
     } catch (error) {
         return NextResponse.json(
@@ -20,15 +26,19 @@ export async function DELETE(
     }
 }
 
-
-export async function GET(
-    request: Request,
-    { params }: { params: { birth_id: string } }
-) {
+// GET request handler
+export async function GET(request: Request) {
     try {
+        const url = new URL(request.url);
+        const birth_id = url.pathname.split("/").pop(); // Extract the birth_id from the URL
+
+        if (!birth_id) {
+            return NextResponse.json({ error: 'Birth ID is missing' }, { status: 400 });
+        }
+
         const birth = await prisma.birth.findUnique({
             where: {
-                birth_id: params.birth_id
+                birth_id: birth_id
             }
         });
 
@@ -49,15 +59,20 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: Request,
-    { params }: { params: { birth_id: string } }
-) {
+// PUT request handler
+export async function PUT(request: Request) {
     try {
+        const url = new URL(request.url);
+        const birth_id = url.pathname.split("/").pop(); // Extract the birth_id from the URL
+
+        if (!birth_id) {
+            return NextResponse.json({ error: 'Birth ID is missing' }, { status: 400 });
+        }
+
         const body = await request.json();
         const birth = await prisma.birth.update({
             where: {
-                birth_id: params.birth_id,
+                birth_id: birth_id,
             },
             data: {
                 patient_id: body.patient_id,
@@ -68,10 +83,11 @@ export async function PUT(
                 typeofDelivery: body.typeofDelivery
             },
         });
+
         return NextResponse.json(birth);
     } catch (error) {
         return NextResponse.json(
-            { error: `Failed to update birth record ${error} ` },
+            { error: `Failed to update birth record ${error}` },
             { status: 500 }
         );
     }

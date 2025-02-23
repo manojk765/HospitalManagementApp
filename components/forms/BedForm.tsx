@@ -50,7 +50,7 @@ const BedForm: React.FC<BedFormProps> = ({ bed, isEdit = false }) => {
         throw new Error(data.error || "Something went wrong")
       }
 
-      window.location.href = "/beds"
+      window.location.href = "/list/beds/list"
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
