@@ -3,7 +3,11 @@ import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
-export default async function DeleteSurgeryPage({ params }: { params: { surgery_name: string } }) {
+type Params = Promise<{ surgery_name : string }> 
+
+export default async function DeleteSurgeryPage( props : {params : Params}) {
+  const params = await props.params
+
   const surgeryName = decodeURIComponent(params.surgery_name)
 
   const surgery = await prisma.surgery.findUnique({

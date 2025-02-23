@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 
 interface Patient {
   patient_id: string
@@ -31,7 +31,10 @@ interface AdmissionFormData {
   admittedDate: string
 } 
 
-export default function AdmissionPage({ params }: { params: { id: string } }) {
+type Params = Promise<{ id : string }> 
+
+export default function AdmissionPage(  props : { params: Params }) {
+  const params = use(props.params)
   const patientId = params.id
 
   const [patient, setPatient] = useState<Patient | null>(null)

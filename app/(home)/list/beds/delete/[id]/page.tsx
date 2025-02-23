@@ -2,7 +2,11 @@ import Link from "next/link"
 import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
 
-export default async function DeleteBedPage({ params }: { params: { id: string } }) {
+type Params = Promise<{ id : string }>
+
+export default async function DeleteBedPage( props : { params:  Params  }) {
+  const params = await props.params;
+
   const bed = await prisma.beds.findUnique({
     where: { id: parseInt(params.id) },
     include: {

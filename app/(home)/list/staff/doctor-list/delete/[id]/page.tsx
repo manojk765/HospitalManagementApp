@@ -2,7 +2,11 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation"
 
-export default async function DeleteDoctorPage({ params }: { params: { id: string } }) {
+type Params = Promise<{id: string}>
+
+export default async function DeleteDoctorPage( props :{params: Params}) {
+  const params = await props.params
+
   const doctor = await prisma.doctor.findUnique({
     where: { doctor_id: params.id },
     include: {

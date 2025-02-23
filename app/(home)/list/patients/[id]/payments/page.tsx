@@ -1,7 +1,7 @@
 "use client"
 
 import Decimal from "decimal.js"
-import { useCallback, useEffect, useState } from "react"
+import { use, useCallback, useEffect, useState } from "react"
 import { Trash2, Edit2, Search, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -61,7 +61,11 @@ const Modal = ({ isOpen, onClose, children }: {
   )
 }
 
-export default function PatientPaymentsPage({ params }: { params: { id: string } }) {
+type Params = Promise<{ id : string }> 
+
+export default function PatientPaymentsPage(  props : { params: Params }) {
+  const params = use(props.params)
+  
   const patientId =  params.id
   const router = useRouter()
   

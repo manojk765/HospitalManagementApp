@@ -2,8 +2,11 @@ import ServiceForm from "@/components/forms/ServiceForm"
 import { updateService } from "../action"
 import prisma from "@/lib/prisma"
 
-export default async function EditServicePage({ params }: { params: { service_name: string } }) {
-  // Decode the service_name to handle URL encoding (e.g., %20 becomes space)
+type Params = Promise<{ service_name : string }> 
+
+export default async function EditServicePage( props : {params : Params}) {
+  const params = await props.params
+  
   const serviceName = decodeURIComponent(params.service_name);
 
   const service = await prisma.services.findUnique({

@@ -67,7 +67,12 @@ async function getPayments(patientId: string) {
   });
   return payments;
 }
-export default async function PatientBillPage({ params }: { params: { id: string } }) {
+
+type Params = Promise<{id : string}>
+
+export default async function PatientBillPage( props : {params : Params}) {
+  const params = await props.params
+  
   const patientId = params.id;
   const patient = await getPatientData(patientId);
   const doctor = patient?.doctors[0] ? await getDoctorData(patient.doctors[0].doctor_id) : null;

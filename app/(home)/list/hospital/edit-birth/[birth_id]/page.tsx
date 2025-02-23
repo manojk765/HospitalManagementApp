@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , use } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Patient {
@@ -10,7 +9,11 @@ interface Patient {
     email : string
 }
 
-export default function EditBirthPage({ params }: { params: { birth_id: string } }) {
+type Params = Promise<{ birth_id : string }>
+
+export default function EditBirthPage( props : { params: Params }) {
+    const params = use(props.params)
+
     const router = useRouter();
     const [patients, setPatients] = useState<Patient[]>([]);
     const [loading, setLoading] = useState(true);

@@ -2,7 +2,10 @@ import TestForm from "@/components/forms/TestForm"
 import { updateTest } from "../action"
 import prisma from "@/lib/prisma"
 
-export default async function EditServicePage({ params }: { params: { test_name : string } }) {
+type Params =  Promise<{ test_name : string }> 
+
+export default async function EditServicePage( props : {params : Params }) {
+  const params = await props.params
   const testName = decodeURIComponent(params.test_name);
 
   const test = await prisma.labTest.findUnique({

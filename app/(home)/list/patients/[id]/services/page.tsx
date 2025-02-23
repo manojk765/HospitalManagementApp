@@ -21,11 +21,11 @@ async function getPatientServices(id: string) {
   return services;
 }
 
-export default async function PatientServicesPage({
-  params
-}: {
-  params: { id: string };
-}) {
+type Params = Promise<{ id : string }> 
+
+export default async function PatientServicesPage(  props : { params: Params } ) {
+  const params = await props.params
+
   const services = await getPatientServices(params.id);
   
   return <ServicesComponent services={services} patientId={params.id} />;

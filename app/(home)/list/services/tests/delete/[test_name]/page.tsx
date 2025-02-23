@@ -3,7 +3,11 @@ import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
-export default async function DeleteTestPage({ params }: { params: { test_name: string } }) {
+type Params =  Promise<{ test_name : string }> 
+
+export default async function DeleteTestPage( props : {params : Params }) {
+  const params = await props.params
+
   const testName = decodeURIComponent(params.test_name)
 
   const test = await prisma.labTest.findUnique({

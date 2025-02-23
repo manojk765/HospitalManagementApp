@@ -2,7 +2,11 @@ import SurgeryForm from "@/components/forms/SurgeryForm"
 import { updateSurgery } from "../action"
 import prisma from "@/lib/prisma"
 
-export default async function EditSurgeryPage({ params }: { params: { surgery_name : string } }) {
+type Params = Promise<{ surgery_name : string }> 
+
+export default async function EditSurgeryPage( props : {params : Params} ) {
+  const params = await props.params
+  
   const surgeryName = decodeURIComponent(params.surgery_name);
 
   const surgery = await prisma.surgery.findUnique({

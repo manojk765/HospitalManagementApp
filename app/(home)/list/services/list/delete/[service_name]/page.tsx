@@ -2,7 +2,11 @@ import { deleteService } from "../action"
 import prisma from "@/lib/prisma"
 import Link from "next/link"
 
-export default async function DeleteServicePage({ params }: { params: { service_name: string } }) {
+type Params = Promise<{ service_name : string }> 
+
+export default async function DeleteServicePage(  props : {params : Params }) {
+  const params = await props.params
+
   const serviceName = decodeURIComponent(params.service_name)
 
   const service = await prisma.services.findUnique({

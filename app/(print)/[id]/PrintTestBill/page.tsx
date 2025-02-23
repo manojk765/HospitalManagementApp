@@ -19,7 +19,11 @@ async function getPatientTests(patientId: string) {
   return tests
 }
 
-export default async function PatientTestsPage({ params }: { params: { id: string } }) {
+type Params = Promise<{id : string}>
+
+export default async function PatientTestsPage( props : {params : Params} ) {
+  const params = await props.params
+
   const patientId = params.id
   const patient = await getPatientData(patientId)
   const tests = await getPatientTests(patientId)

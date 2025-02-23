@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Medicine {
@@ -8,11 +8,11 @@ interface Medicine {
   manufacturer_name : string;
 }
 
-export default function DeleteMedicine({ 
-  params 
-}: { 
-  params: { medicine_id: string } 
-}) {
+type Params = Promise<{ medicine_id : string }> 
+
+export default function DeleteMedicine( props : {params : Params }) {
+  const params = use(props.params)
+  
   const router = useRouter()
   const [medicine, setMedicine] = useState<Medicine | null>(null)
   const [error, setError] = useState('')

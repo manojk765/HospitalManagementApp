@@ -2,11 +2,11 @@ import { notFound } from 'next/navigation';
 import DepartmentForm from '@/components/forms/DepartmentForm';
 import prisma from '@/lib/prisma';
 
-interface Params {
-  name: string;
-}
+type Params = Promise<{ name : string }>
 
-const EditDepartmentPage = async ({ params }: { params: Params }) => {
+const EditDepartmentPage = async (props : {params : Params }) => {
+  const params = await props.params
+
   const departmentName = decodeURIComponent(params.name).replace(/%20/g, ' ');
 
   const department = await prisma.department.findUnique({

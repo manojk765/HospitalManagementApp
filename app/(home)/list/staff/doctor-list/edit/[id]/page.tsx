@@ -1,7 +1,11 @@
 import DoctorForm from "@/components/forms/NewDoctorForm"
 import prisma from "@/lib/prisma"
 
-export default async function EditDoctorPage({ params }: { params: { id: string } }) {
+type Params = Promise<{id: string}>
+
+export default async function EditDoctorPage(  props :{params: Params} ) {
+  const params = await props.params
+  
   const doctor = await prisma.doctor.findUnique({
     where: { doctor_id: params.id },
     include: { department: true },

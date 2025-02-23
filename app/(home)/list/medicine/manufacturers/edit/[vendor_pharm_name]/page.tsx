@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function EditManufacturer({ 
-  params 
-}: { 
-  params: { vendor_pharm_name: string } 
-}) {
+type Params = Promise<{ vendor_pharm_name : string }> 
+
+export default function EditManufacturer( props: { params: Params } ) {
+  const params = use( props.params )
+  
   const router = useRouter()
   const [formData, setFormData] = useState({
     vendor_pharm_name: '',

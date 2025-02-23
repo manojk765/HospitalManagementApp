@@ -19,7 +19,11 @@ async function getPatientAdmissions(patientId: string) {
   return admissions
 }
 
-export default async function PatientAdmissionsPage({ params }: { params: { id: string } }) {
+type Params = Promise<{id : string}>
+
+export default async function PatientAdmissionsPage( props : {params : Params} ) {
+  const params = await props.params
+
   const patientId = params.id
   const patient = await getPatientData(patientId)
   const admissions = await getPatientAdmissions(patientId)

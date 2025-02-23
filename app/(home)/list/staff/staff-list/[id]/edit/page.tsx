@@ -16,14 +16,12 @@ interface Staff {
       department_name: string;
     };
   }
-  
-interface EditStaffPageProps {
-  params: {
-    id: string;
-  };
-}
 
-export default async function EditStaffPage({ params }: EditStaffPageProps) {
+type Params = Promise<{ id : string}>
+
+export default async function EditStaffPage( props : {params : Params}) {
+  const params = await props.params
+  
   const staff = await prisma.staff.findUnique({
     where: { staff_id: params.id },
     include: {

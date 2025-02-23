@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { Manufacturer } from '@prisma/client'
 
-export default function EditMedicine({ params }: { params: { medicine_id: string } }) {
+type Params = Promise<{ medicine_id : string }> 
+
+export default function EditMedicine( props : {params : Params } ) {
+  const params = use(props.params)
   const router = useRouter()
   const [formData, setFormData] = useState({
     medicine_name: '',
