@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Define the ExpenseFormData type if not imported
 interface ExpenseFormData {
   title: string;
   amount: string;
@@ -13,7 +12,6 @@ interface ExpenseFormData {
   description: string;
 }
 
-// Update the props type definition for Next.js App Router
 interface PageProps {
   params: {
     id: string;
@@ -21,7 +19,7 @@ interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function EditExpense({ params, searchParams }: PageProps) {
+export default function EditExpense({ params }: PageProps) {
   const router = useRouter();
   const { id } = params;
   
