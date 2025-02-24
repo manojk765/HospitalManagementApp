@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Trash2, Search } from "lucide-react"
-import { Suspense } from 'react';
 import { useSearchParams } from "next/navigation"
 import TableSearch from "@/components/tablesearch"
 
@@ -124,8 +123,7 @@ export default function PaymentsHistoryPage() {
   }
 
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <div className="max-w-6xl mx-auto p-6">
         {(error || successMessage) && (
           <div
@@ -204,7 +202,6 @@ export default function PaymentsHistoryPage() {
           </div>
         </div>
       </div>
-      </Suspense>
-    </>
+    </Suspense>
   )
 }
