@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Trash2, Search } from "lucide-react"
+import { Suspense } from 'react';
 import { useSearchParams } from "next/navigation"
 import TableSearch from "@/components/tablesearch"
 
@@ -123,83 +124,87 @@ export default function PaymentsHistoryPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {(error || successMessage) && (
-        <div
-          className={`fixed top-6 left-1/2 transform -translate-x-1/2 p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ${
-            error ? 'bg-red-600' : 'bg-green-600'
-          }`}
-          role="alert"
-        >
-          <p className="text-center text-lg font-semibold">
-            {error || successMessage}
-          </p>
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+      <div className="max-w-6xl mx-auto p-6">
+        {(error || successMessage) && (
+          <div
+            className={`fixed top-6 left-1/2 transform -translate-x-1/2 p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ${
+              error ? 'bg-red-600' : 'bg-green-600'
+            }`}
+            role="alert"
+          >
+            <p className="text-center text-lg font-semibold">
+              {error || successMessage}
+            </p>
+          </div>
+        )}
+
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Payments History</h1>
         </div>
-      )}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Payments History</h1>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-lg mb-8">
-        <div className="p-6 bg-gray-50 rounded-t-lg">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <TableSearch />
-            <div className="relative">
-              <input
-                type="date"
-                value={searchDate}
-                onChange={handleDateChange}
-                className="border rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <div className="bg-white rounded-lg shadow-lg mb-8">
+          <div className="p-6 bg-gray-50 rounded-t-lg">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <TableSearch />
+              <div className="relative">
+                <input
+                  type="date"
+                  value={searchDate}
+                  onChange={handleDateChange}
+                  className="border rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3 text-left text-sm font-medium text-gray-700">Payment ID</th>
-                <th className="p-3 text-left text-sm font-medium text-gray-700">Patient</th>
-                <th className="p-3 text-left text-sm font-medium text-gray-700">Date</th>
-                <th className="p-3 text-left text-sm font-medium text-gray-700">Method</th>
-                <th className="p-3 text-right text-sm font-medium text-gray-700">Amount</th>
-                <th className="p-3 text-center text-sm font-medium text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPayments.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
-                    No payments found
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="p-3 text-left text-sm font-medium text-gray-700">Payment ID</th>
+                  <th className="p-3 text-left text-sm font-medium text-gray-700">Patient</th>
+                  <th className="p-3 text-left text-sm font-medium text-gray-700">Date</th>
+                  <th className="p-3 text-left text-sm font-medium text-gray-700">Method</th>
+                  <th className="p-3 text-right text-sm font-medium text-gray-700">Amount</th>
+                  <th className="p-3 text-center text-sm font-medium text-gray-700">Actions</th>
                 </tr>
-              ) : (
-                filteredPayments.map((payment) => (
-                  <tr key={payment.payment_id} className="border-b hover:bg-gray-50 transition duration-200">
-                    <td className="p-3 text-sm text-gray-700">{payment.payment_id}</td>
-                    <td className="p-3 text-sm text-gray-700">{payment.patient_id} - {payment.patient_name}</td>
-                    <td className="p-3 text-sm text-gray-700">{new Date(payment.payment_date).toLocaleDateString()}</td>
-                    <td className="p-3 text-sm text-gray-700">{payment.payment_method}</td>
-                    <td className="p-3 text-sm text-right text-gray-700">₹{Number(payment.amount_paid).toFixed(2)}</td>
-                    <td className="p-3 flex justify-center">
-                      <button
-                        onClick={() => handleDelete(payment.payment_id)}
-                        className="p-2 text-red-600 hover:bg-red-100 rounded transition duration-200"
-                        title="Delete payment"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+              </thead>
+              <tbody>
+                {filteredPayments.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-gray-500">
+                      No payments found
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredPayments.map((payment) => (
+                    <tr key={payment.payment_id} className="border-b hover:bg-gray-50 transition duration-200">
+                      <td className="p-3 text-sm text-gray-700">{payment.payment_id}</td>
+                      <td className="p-3 text-sm text-gray-700">{payment.patient_id} - {payment.patient_name}</td>
+                      <td className="p-3 text-sm text-gray-700">{new Date(payment.payment_date).toLocaleDateString()}</td>
+                      <td className="p-3 text-sm text-gray-700">{payment.payment_method}</td>
+                      <td className="p-3 text-sm text-right text-gray-700">₹{Number(payment.amount_paid).toFixed(2)}</td>
+                      <td className="p-3 flex justify-center">
+                        <button
+                          onClick={() => handleDelete(payment.payment_id)}
+                          className="p-2 text-red-600 hover:bg-red-100 rounded transition duration-200"
+                          title="Delete payment"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+      </Suspense>
+    </>
   )
 }
