@@ -1,8 +1,11 @@
 "use client"
 
+import type React from "react"
+
 import Decimal from "decimal.js"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Trash2, Edit2, Search } from "lucide-react"
+import Select from "react-select"
 
 interface Patient {
   patient_id: string
@@ -16,6 +19,8 @@ interface Payment {
   payment_date: string
   payment_method: string
   amount_paid: Decimal
+  discharged: boolean
+  description: string
 }
 
 interface PaymentFormData {
@@ -23,26 +28,32 @@ interface PaymentFormData {
   payment_date: string
   payment_method: string
   amount_paid: Decimal
+  description: string
+}
+
+interface PatientOption {
+  value: string
+  label: string
 }
 
 // Modal component
-const Modal = ({ 
-  isOpen, 
-  onClose, 
-  children 
-}: { 
+const Modal = ({
+  isOpen,
+  onClose,
+  children,
+}: {
   isOpen: boolean
   onClose: () => void
-  children: React.ReactNode 
+  children: React.ReactNode
 }) => {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = "unset"
     }
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = "unset"
     }
   }, [isOpen])
 
@@ -59,9 +70,9 @@ const Modal = ({
       <div className="flex min-h-screen items-center justify-center">
         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
 
-        <div 
+        <div
           className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:w-full sm:max-w-lg"
-          onClick={e => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
         >
           {children}
         </div>
@@ -72,14 +83,17 @@ const Modal = ({
 
 export default function PaymentsPage() {
   const [patients, setPatients] = useState<Patient[]>([])
+  const [patientOptions, setPatientOptions] = useState<PatientOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [selectedPatient, setSelectedPatient] = useState("")
   const [paymentDate, setPaymentDate] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
   const [amount, setAmount] = useState(0)
+  const [description, setDescription] = useState("Patient Payment")
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchDate, setSearchDate] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -87,7 +101,7 @@ export default function PaymentsPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date().toISOString().split("T")[0]
     setPaymentDate(today)
   }, [])
 
@@ -109,7 +123,7 @@ export default function PaymentsPage() {
     }
   }, [successMessage])
 
-  const fetchPayments = async (date: string) => {
+  const fetchPayments = useCallback(async (date: string) => {
     try {
       const response = await fetch(`/api/payments?date=${date}`)
       if (!response.ok) throw new Error("Failed to fetch payments")
@@ -119,7 +133,7 @@ export default function PaymentsPage() {
       setError("Failed to load payments. Please try again later.")
       console.error(err)
     }
-  }
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,6 +147,13 @@ export default function PaymentsPage() {
         const patientsData = await patientsResponse.json()
         setPatients(patientsData)
 
+        // Create options for react-select
+        const options = patientsData.map((patient: Patient) => ({
+          value: patient.patient_id,
+          label: `${patient.patient_id} - ${patient.name}`,
+        }))
+        setPatientOptions(options)
+
         await fetchPayments(searchDate)
       } catch (err) {
         setError("Failed to load data. Please check your connection and try again.")
@@ -143,7 +164,12 @@ export default function PaymentsPage() {
     }
 
     fetchData()
-  }, [searchDate])
+  }, [searchDate, fetchPayments])
+
+  // Filter patient options based on search term
+  const filteredPatientOptions = searchTerm
+    ? patientOptions.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+    : patientOptions
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -155,13 +181,12 @@ export default function PaymentsPage() {
       payment_date: paymentDate,
       payment_method: paymentMethod,
       amount_paid: new Decimal(amount),
+      description: description,
     }
 
     try {
-      const url = editingPayment 
-        ? `/api/payments/${editingPayment.payment_id}`
-        : "/api/payments"
-      
+      const url = editingPayment ? `/api/payments/${editingPayment.payment_id}` : "/api/payments"
+
       const method = editingPayment ? "PUT" : "POST"
 
       const response = await fetch(url, {
@@ -209,16 +234,18 @@ export default function PaymentsPage() {
     setSelectedPatient("")
     setPaymentMethod("")
     setAmount(0)
+    setDescription("Patient Payment")
     setEditingPayment(null)
   }
 
   const handleEdit = (payment: Payment) => {
     setEditingPayment(payment)
     setSelectedPatient(payment.patient_id)
-    const date =  new Date(payment.payment_date).toISOString().split('T')[0] 
+    const date = new Date(payment.payment_date).toISOString().split("T")[0]
     setPaymentDate(date)
     setPaymentMethod(payment.payment_method)
     setAmount(Number(payment.amount_paid))
+    setDescription(payment.description)
     setIsDialogOpen(true)
   }
 
@@ -232,20 +259,16 @@ export default function PaymentsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      
       {(error || successMessage) && (
         <div
-          className={`fixed top-6 left-1/2 transform -translate-x-1/2 p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ₹{
-            error ? 'bg-red-600' : 'bg-green-600'
+          className={`fixed top-6 left-1/2 transform -translate-x-1/2 p-4 rounded-2xl shadow-lg transition-all duration-500 text-white w-full max-w-md ${
+            error ? "bg-red-600" : "bg-green-600"
           }`}
           role="alert"
         >
-          <p className="text-center text-lg font-semibold">
-            {error || successMessage}
-          </p>
+          <p className="text-center text-lg font-semibold">{error || successMessage}</p>
         </div>
       )}
-
 
       <div className="mb-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Payments Management</h1>
@@ -282,6 +305,7 @@ export default function PaymentsPage() {
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Patient</th>
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Date</th>
                 <th className="p-3 text-left text-sm font-medium text-gray-700">Method</th>
+                <th className="p-3 text-left text-sm font-medium text-gray-700">Description</th>
                 <th className="p-3 text-right text-sm font-medium text-gray-700">Amount</th>
                 <th className="p-3 text-center text-sm font-medium text-gray-700">Actions</th>
               </tr>
@@ -289,7 +313,7 @@ export default function PaymentsPage() {
             <tbody>
               {payments.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                  <td colSpan={7} className="p-8 text-center text-gray-500">
                     No payments found for this date
                   </td>
                 </tr>
@@ -297,9 +321,12 @@ export default function PaymentsPage() {
                 payments.map((payment) => (
                   <tr key={payment.payment_id} className="border-b hover:bg-gray-50 transition duration-200">
                     <td className="p-3 text-sm text-gray-700">{payment.payment_id}</td>
-                    <td className="p-3 text-sm text-gray-700">{payment.patient_id} - {payment.patient_name}</td>
+                    <td className="p-3 text-sm text-gray-700">
+                      {payment.patient_id} - {payment.patient_name}
+                    </td>
                     <td className="p-3 text-sm text-gray-700">{new Date(payment.payment_date).toLocaleDateString()}</td>
                     <td className="p-3 text-sm text-gray-700">{payment.payment_method}</td>
+                    <td className="p-3 text-sm text-gray-700">{payment.description}</td>
                     <td className="p-3 text-sm text-right text-gray-700">{Number(payment.amount_paid).toFixed(2)}</td>
                     <td className="p-3 flex justify-center gap-2">
                       <button
@@ -326,10 +353,13 @@ export default function PaymentsPage() {
       </div>
 
       {/* Payment Form Modal */}
-      <Modal isOpen={isDialogOpen} onClose={() => {
-        resetForm()
-        setIsDialogOpen(false)
-      }}>
+      <Modal
+        isOpen={isDialogOpen}
+        onClose={() => {
+          resetForm()
+          setIsDialogOpen(false)
+        }}
+      >
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800" id="modal-title">
@@ -354,20 +384,34 @@ export default function PaymentsPage() {
               <label htmlFor="patient" className="block text-sm font-medium text-gray-700">
                 Patient
               </label>
-              <select
-                id="patient"
-                value={selectedPatient}
-                onChange={(e) => setSelectedPatient(e.target.value)}
-                disabled={!!editingPayment}
-                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select a patient</option>
-                {patients.map((patient) => (
-                  <option key={patient.patient_id} value={patient.patient_id}>
-                    {patient.name}
-                  </option>
-                ))}
-              </select>
+              {!editingPayment ? (
+                <Select
+                  id="patient-select"
+                  options={patientOptions}
+                  value={patientOptions.find((option) => option.value === selectedPatient)}
+                  onChange={(option) => option && setSelectedPatient(option.value)}
+                  onInputChange={(value) => setSearchTerm(value)}
+                  isDisabled={!!editingPayment}
+                  placeholder="Search for a patient..."
+                  className="w-full"
+                  classNamePrefix="react-select"
+                />
+              ) : (
+                <select
+                  id="patient"
+                  value={selectedPatient}
+                  onChange={(e) => setSelectedPatient(e.target.value)}
+                  disabled={!!editingPayment}
+                  className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a patient</option>
+                  {patients.map((patient) => (
+                    <option key={patient.patient_id} value={patient.patient_id}>
+                      {patient.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -422,6 +466,21 @@ export default function PaymentsPage() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <input
+                type="text"
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                maxLength={100}
+                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
             <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
@@ -443,8 +502,10 @@ export default function PaymentsPage() {
                     <div className="w-4 h-4 border-t-2 border-white rounded-full animate-spin"></div>
                     Submitting...
                   </span>
+                ) : editingPayment ? (
+                  "Update Payment"
                 ) : (
-                  editingPayment ? "Update Payment" : "Add Payment"
+                  "Add Payment"
                 )}
               </button>
             </div>
@@ -463,3 +524,4 @@ export default function PaymentsPage() {
     </div>
   )
 }
+

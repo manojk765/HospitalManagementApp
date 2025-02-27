@@ -74,7 +74,7 @@ export default function ServicesComponent({ services: initialServices, patientId
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]; 
     setServiceDate(today); 
-  }, []);
+  }, []); 
 
   // Fetch available services when component mounts
   useEffect(() => {

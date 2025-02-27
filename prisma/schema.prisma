@@ -305,7 +305,8 @@ model Payment {
   payment_date   DateTime
   payment_method String   @db.VarChar(20)
   amount_paid    Decimal  @db.Decimal(10, 2)  
-  discharged       Boolean @default(false)
+  discharged       Boolean @default(false) 
+  description      String @db.VarChar(100) @default("Patient Payment")
 
   patient        Patient  @relation(fields: [patient_id], references: [patient_id]) 
 
