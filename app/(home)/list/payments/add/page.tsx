@@ -9,7 +9,7 @@ import Select from "react-select"
 
 interface Patient {
   patient_id: string
-  name: string
+  name: string 
 }
 
 interface Payment {
@@ -167,9 +167,9 @@ export default function PaymentsPage() {
   }, [searchDate, fetchPayments])
 
   // Filter patient options based on search term
-  const filteredPatientOptions = searchTerm
-    ? patientOptions.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
-    : patientOptions
+  // const filteredPatientOptions = searchTerm
+  //   ? patientOptions.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+  //   : patientOptions
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
