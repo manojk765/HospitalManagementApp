@@ -78,7 +78,7 @@ export default function TestsComponent({ tests: initialTests, patientId }: Props
   useEffect(() => {
     async function fetchAvailableTests() {
       try {
-        const res = await fetch("/api/patient-tests")
+        const res = await fetch("/api/tests")
         const data = await res.json()
         setSelectTests(data)
       } catch (error) {

@@ -44,6 +44,8 @@ const sidebarItems = [
     icon: Users,
     submenu:[
       {title: "Services",href:"/patient-services"},
+      {title:"Tests", href:"/patient-tests"},
+      // {tit}
     ], 
     visible: ["admin", "staff"]
   },

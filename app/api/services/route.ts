@@ -44,8 +44,8 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   const data = await request.json();
   try {
-    const service = await prisma.services.update({
-      where: { service_name: data.service_name },
+    const service = await prisma.services.update({  
+      where: { service_name: decodeURIComponent(data.service_name) }, 
       data: {
         description: data.description,
         cost: Number.parseFloat(data.cost),
@@ -53,7 +53,7 @@ export async function PUT(request: Request) {
     });
     return NextResponse.json(service);
   } catch (error) {
-    console.error("Error updating service:", error);  // Log the error
+    console.error("Error updating service:", error); // Log the actual error
     return NextResponse.json({ error: "Error updating service" }, { status: 500 });
   }
 }

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET: Fetch all surgeries
 export async function GET() {
   try {
     const surgeries = await prisma.surgery.findMany({
@@ -25,7 +24,6 @@ export async function GET() {
   }
 }
 
-// POST: Create a new surgery
 export async function POST(request: Request) {
   const data = await request.json();
   try {
@@ -46,12 +44,11 @@ export async function POST(request: Request) {
   }
 }
 
-// PUT: Update an existing surgery
 export async function PUT(request: Request) {
   const data = await request.json();
   try {
     const surgery = await prisma.surgery.update({
-      where: { surgery_name: data.surgery_name },
+      where: { surgery_name: decodeURIComponent(data.surgery_name) }, // Handle spaces
       data: {
         description: data.description,
         cost: Number.parseFloat(data.cost),
@@ -67,7 +64,6 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE: Delete a surgery by surgery_name
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const surgery_name = searchParams.get("surgery_name");
@@ -79,7 +75,7 @@ export async function DELETE(request: Request) {
   }
   try {
     await prisma.surgery.delete({
-      where: { surgery_name },
+      where: { surgery_name: decodeURIComponent(surgery_name) }, // Handle spaces
     });
     return NextResponse.json({ message: "Surgery deleted successfully" });
   } catch (error) {

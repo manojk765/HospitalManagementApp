@@ -1,12 +1,12 @@
 import ServiceForm from "@/components/forms/ServiceForm"
 import { updateService } from "../action"
 import prisma from "@/lib/prisma"
+import { notFound } from "next/navigation"
 
 type Params = Promise<{ service_name : string }> 
 
-export default async function EditServicePage( props : {params : Params}) {
-  const params = await props.params
-  
+export default async function EditServicePage(props : {params : Params}) {
+  const params = await props.params 
   const serviceName = decodeURIComponent(params.service_name);
 
   const service = await prisma.services.findUnique({
@@ -14,7 +14,7 @@ export default async function EditServicePage( props : {params : Params}) {
   })
 
   if (!service) {
-    return <div>Service not found</div>
+    notFound()
   }
 
   return (
