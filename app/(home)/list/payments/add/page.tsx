@@ -167,9 +167,11 @@ export default function PaymentsPage() {
   }, [searchDate, fetchPayments])
 
   // Filter patient options based on search term
-  // const filteredPatientOptions = searchTerm
-  //   ? patientOptions.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
-  //   : patientOptions
+  const filteredPatientOptions = searchTerm
+    ? patientOptions.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+    : patientOptions
+
+  console.log(filteredPatientOptions)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
