@@ -70,7 +70,7 @@ export default async function PatientsPage(
             <TableSearch />
           </div>
           <Link
-            href="/patients/add"
+            href="/list/patients/add/ipd"
             className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
           >
             <Plus className="w-5 h-5" />

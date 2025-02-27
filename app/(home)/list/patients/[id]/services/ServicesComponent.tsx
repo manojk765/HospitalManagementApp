@@ -80,7 +80,7 @@ export default function ServicesComponent({ services: initialServices, patientId
   useEffect(() => {
     async function fetchAvailableServices() {
       try {
-        const res = await fetch("/api/patient-services");
+        const res = await fetch("/api/services");
         const data = await res.json();
         setSelectServices(data);
       } catch (error) {

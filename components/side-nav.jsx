@@ -37,6 +37,14 @@ const sidebarItems = [
       {title:"Add OPD Patient", href:"/list/patients/add/opd"},
       { title: "OPD Patients", href: "/list/patients/opd" },
     ],
+    visible: ["admin", "staff"] 
+  },
+  {
+    title:"Patient Services",
+    icon: Users,
+    submenu:[
+      {title: "Services",href:"/patient-services"},
+    ], 
     visible: ["admin", "staff"]
   },
   {

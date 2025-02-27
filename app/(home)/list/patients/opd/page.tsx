@@ -48,7 +48,7 @@ export default function DailyVisitLog() {
       if (response.ok) {
         const data = await response.json();
         setPatients(data);
-        setFilteredPatients(data); // Initially show all patients
+        setFilteredPatients(data);  
       } else {
         console.error("Error fetching patient records");
       }
@@ -83,7 +83,7 @@ export default function DailyVisitLog() {
           new Date(patient.visitDate).toLocaleString(),
           `${patient.doctor.doctor_id} - ${patient.doctor.name}`,
           patient.purpose,
-          patient.amount.toString(), // Convert Decimal to string for CSV export
+          patient.amount.toString(), 
         ].join(",")
       ),
     ].join("\n");

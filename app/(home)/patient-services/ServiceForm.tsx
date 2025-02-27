@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import { useState } from "react"
 
@@ -23,13 +25,14 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
   const [selectedService, setSelectedService] = useState<string>("")
   const [quantity, setQuantity] = useState<number>(1)
   const [serviceDate, setServiceDate] = useState<string>(new Date().toISOString().split("T")[0])
+  const [totalCost, setTotalCost] = useState<number>(0)
+  const [canEditTotalCost, setCanEditTotalCost] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const service = services.find((s) => s.service_name === selectedService)
     if (!service) return
 
-    const totalCost = service.cost * quantity
     onAddService({
       patient_id: patientId,
       service_name: selectedService,
@@ -42,6 +45,15 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
     setSelectedService("")
     setQuantity(1)
     setServiceDate(new Date().toISOString().split("T")[0])
+    setTotalCost(0)
+    setCanEditTotalCost(false)
+  }
+
+  const updateTotalCost = (serviceName: string, newQuantity: number) => {
+    const service = services.find((s) => s.service_name === serviceName)
+    if (service) {
+      setTotalCost(service.cost * newQuantity)
+    }
   }
 
   return (
@@ -55,7 +67,10 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
           <select
             id="service"
             value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
+            onChange={(e) => {
+              setSelectedService(e.target.value)
+              updateTotalCost(e.target.value, quantity)
+            }}
             required
             className="block w-full p-2 border rounded"
           >
@@ -75,7 +90,10 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
             type="number"
             id="quantity"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) => {
+              setQuantity(Number(e.target.value))
+              updateTotalCost(selectedService, Number(e.target.value))
+            }}
             min="1"
             required
             className="block w-full p-2 border rounded"
@@ -93,6 +111,28 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
             required
             className="block w-full p-2 border rounded"
           />
+        </div>
+        <div>
+          <label htmlFor="totalCost" className="block text-sm font-medium text-gray-700 mb-1">
+            Total Cost
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              id="totalCost"
+              value={totalCost}
+              onChange={(e) => setTotalCost(Number(e.target.value))}
+              disabled={!canEditTotalCost}
+              className="block w-full p-2 border rounded"
+            />
+            <button
+              type="button"
+              className="bg-gray-200 text-black px-3 py-2 rounded hover:bg-gray-300"
+              onClick={() => setCanEditTotalCost(!canEditTotalCost)}
+            >
+              {canEditTotalCost ? "Lock" : "Edit"}
+            </button>
+          </div>
         </div>
       </div>
       <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
