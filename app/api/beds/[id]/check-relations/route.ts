@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
+import { NextRequest } from "next/server"
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const id = parseInt(params.id)
     
-    // Check if the bed has related records
     const bed = await prisma.beds.findUnique({
       where: { id },
       include: {
