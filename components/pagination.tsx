@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"; 
 import { useRouter } from "next/navigation";
 
-const ITEM_PER_PAGE = 7;
+const ITEM_PER_PAGE = 10;
 
 const Pagination = ({ page, count }: { page: number; count: number }) => {
   const router = useRouter();

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BarChart2, ChevronDown, ChevronRight, AlertCircle, BarChart3, Bed, Calendar , CalendarFold , Stethoscope, Users, Wallet, Factory, Pill, Rows3  , IndianRupee } from "lucide-react";
+import { BarChart2, ChevronDown, ChevronRight, AlertCircle, BarChart3, Bed, Calendar , CalendarFold , Stethoscope, Users, Wallet, Factory, Pill, Rows3  , IndianRupee, User } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 const sidebarItems = [
@@ -12,6 +12,12 @@ const sidebarItems = [
     title: "Dashboard",
     icon: BarChart3,
     href: "/admin",
+    visible: ["admin"]
+  },
+  {
+    title: "Add new user",
+    icon: User,
+    href: "/admin/add-user",
     visible: ["admin"]
   },
   {
@@ -27,7 +33,6 @@ const sidebarItems = [
     visible: ["admin", "pharma"]
   },
 
-  // Patients
   {
     title: "Patient Management",
     icon: Users,
@@ -45,7 +50,7 @@ const sidebarItems = [
     submenu:[
       {title: "Services",href:"/patient-services"},
       {title:"Tests", href:"/patient-tests"},
-      // {tit}
+      {title:"Sample",href:"/list/services/sample"}
     ], 
     visible: ["admin", "staff"]
   },

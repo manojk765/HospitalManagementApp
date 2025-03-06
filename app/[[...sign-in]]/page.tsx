@@ -3,9 +3,10 @@
 import * as Clerk from "@clerk/elements/common";
 import * as SignIn from "@clerk/elements/sign-in";
 import { useUser } from "@clerk/nextjs";
-// import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Plus } from 'lucide-react';
+
 
 const LoginPage = () => {
   const { user } = useUser();
@@ -103,6 +104,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-
-import { Plus } from 'lucide-react';

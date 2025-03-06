@@ -21,7 +21,7 @@ interface Props {
   }) => void
 }
 
-const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => {
+const TestFrom: React.FC<Props> = ({ patientId, services, onAddService }) => {
   const [selectedService, setSelectedService] = useState<string>("")
   const [quantity, setQuantity] = useState<number>(1)
   const [serviceDate, setServiceDate] = useState<string>(new Date().toISOString().split("T")[0])
@@ -142,5 +142,5 @@ const ServiceForm: React.FC<Props> = ({ patientId, services, onAddService }) => 
   )
 }
 
-export default ServiceForm
+export default TestFrom
 
