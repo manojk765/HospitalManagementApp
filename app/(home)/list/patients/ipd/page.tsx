@@ -4,12 +4,10 @@ import Pagination from '@/components/pagination';
 import TableSearch from '@/components/tablesearch';
 import prisma from '@/lib/prisma';
 
-
 type SearchParams = {
   page?: string
   search?: string
 }
-
 
 export default async function PatientsPage( 
   {
@@ -51,13 +49,22 @@ export default async function PatientsPage(
     }),
     prisma.patient.count({
       where: {
-        name: {
-          contains: searchQuery,
-        },
+        OR: [
+          {
+            name: {
+              contains: searchQuery,
+            },
+          },
+          {
+            patient_id: {
+              contains: searchQuery,
+            },
+          },
+        ],
       },
     }),
   ]);
-
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

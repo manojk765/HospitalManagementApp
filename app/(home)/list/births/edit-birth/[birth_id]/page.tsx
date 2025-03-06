@@ -71,7 +71,7 @@ export default function EditBirthPage( props : { params: Params }) {
                 throw new Error('Failed to update birth record');
             }
 
-            router.push('/list/hospital/birth-reports');
+            router.push('/list/births/birth-reports');
         } catch (error) {
             console.error('Error updating birth:', error);
             alert('Failed to update birth record');

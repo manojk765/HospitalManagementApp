@@ -95,8 +95,8 @@ const sidebarItems = [
     title: "Monitor Births",
     icon: Calendar,
     submenu: [
-      { title: "Add Birth", href: "/list/hospital/add-birth" },
-      { title: "Birth Report", href: "/list/hospital/birth-reports" },
+      { title: "Add Birth", href: "/list/births/add-birth" },
+      { title: "Birth Report", href: "/list/births/birth-reports" },
     ],
     visible: ["admin", "staff"]
   },

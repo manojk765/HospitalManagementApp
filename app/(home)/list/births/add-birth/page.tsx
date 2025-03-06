@@ -53,7 +53,7 @@ export default function CreateBirthPage() {
                 throw new Error('Failed to create birth record');
             }
 
-            router.push('/list/hospital/birth-reports');
+            router.push('/list/births/birth-reports');
         } catch (error) {
             console.error('Error creating birth:', error);
             alert('Failed to create birth record');
@@ -159,7 +159,7 @@ export default function CreateBirthPage() {
                 <div className="flex justify-end space-x-4">
                     <button
                         type="button"
-                        onClick={() => router.push('/birth-reports')}
+                        onClick={() => router.push('/list/births/birth-reports')}
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                     >
                         Cancel
