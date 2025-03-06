@@ -2,11 +2,10 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Plus, Edit2, Trash2, Search, X } from "lucide-react"
 import { createService, updateService, deleteService } from "./service-actions"
 import { useRouter, useSearchParams } from "next/navigation"
-// Import the Pagination component at the top of the file
 import Pagination from "@/components/pagination"
 
 interface Service {
@@ -59,11 +58,17 @@ const Modal = ({
   )
 }
 
-const ITEMS_PER_PAGE = 10
+// Loading component for Suspense
+const ServicesLoading = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+)
 
-export default function ServicesManagementPage() {
+// Client component that uses useSearchParams
+const ServicesContent = () => {
+  const ITEMS_PER_PAGE = 10
   const router = useRouter()
-  // Replace the useSearchParams and related hooks with this updated version
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get("search") || ""
   const currentPage = Number(searchParams.get("page") || "1")
@@ -453,3 +458,11 @@ export default function ServicesManagementPage() {
   )
 }
 
+// Main component that wraps the Services content with Suspense
+export default function ServicesManagementPage() {
+  return (
+    <Suspense fallback={<ServicesLoading />}>
+      <ServicesContent />
+    </Suspense>
+  )
+}
