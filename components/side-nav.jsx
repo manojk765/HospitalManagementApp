@@ -50,7 +50,7 @@ const sidebarItems = [
     submenu:[
       {title: "Services",href:"/patient-services"},
       {title:"Tests", href:"/patient-tests"},
-      {title:"Sample",href:"/list/services/sample"}
+      // {title:"Sample",href:"\/list/beds/sample"}
     ], 
     visible: ["admin", "staff"]
   },
@@ -104,7 +104,7 @@ const sidebarItems = [
     title: "Beds Management",
     icon: Bed,
     submenu: [
-      { title: "Bed Group", href: "/list/beds/list" },
+      { title: "Bed Group", href: "/list/beds" },
       { title: "Add a new bed", href: "/list/beds/add" },
     ],
     visible: ["admin"]

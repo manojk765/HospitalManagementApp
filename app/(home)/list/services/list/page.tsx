@@ -458,7 +458,6 @@ const ServicesContent = () => {
   )
 }
 
-// Main component that wraps the Services content with Suspense
 export default function ServicesManagementPage() {
   return (
     <Suspense fallback={<ServicesLoading />}>
