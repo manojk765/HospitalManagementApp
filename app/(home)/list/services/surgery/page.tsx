@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Plus, Edit2, Trash2, Search, X } from "lucide-react"
 import { createSurgery, updateSurgery, deleteSurgery } from "./server-actions"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -58,9 +58,8 @@ const Modal = ({
   )
 }
 
-const ITEMS_PER_PAGE = 10
-
-export default function SurgeryManagementPage() {
+const TSurgeryContent = () =>{
+  const ITEMS_PER_PAGE = 10
   const router = useRouter()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get("search") || ""
@@ -423,5 +422,19 @@ export default function SurgeryManagementPage() {
         </div>
       </Modal>
     </div>
+  )
+}
+
+const SurgeryLoading = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+)
+
+export default function SurgeryManagementPage(){
+  return(
+    <Suspense fallback={<SurgeryLoading />}>
+          <TSurgeryContent />
+    </Suspense>
   )
 }
