@@ -200,7 +200,6 @@ export default function AdmissionPage() {
     }
   }
 
-  //  To Update Discharge
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAdmission , setEditingAdmission] = useState<Admission | null>(null);
 

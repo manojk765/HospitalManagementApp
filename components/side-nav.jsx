@@ -50,7 +50,7 @@ const sidebarItems = [
     submenu:[
       {title: "Services",href:"/patient-services"},
       {title:"Tests", href:"/patient-tests"},
-      // {title:"Sample",href:"\/list/beds/sample"}
+      {title:"Sample",href:"/list/admissions/sample"}
     ], 
     visible: ["admin", "staff"]
   },
@@ -86,8 +86,8 @@ const sidebarItems = [
     icon: CalendarFold ,
     submenu:[
       { title: "Add admission" , href: "/list/admissions/add" },
-      {title: "Discharges",href: "/list/admissions/list"}
-
+      {title: "Admission List",href: "/list/admissions/list"},
+      {title: "Discharges",href: "/list/admissions/discharges"},
     ],
     visible: ["admin", "staff"]
   },
