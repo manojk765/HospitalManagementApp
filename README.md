@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 Hospital Management App
 
-## Getting Started
+A complete hospital management system built for an actual hospital usage with **Next.js**, **Tailwind CSS**, **Prisma**, and **Clerk** for secure role-based authentication. This system provides essential hospital features including patient registration, room management, pharmacy billing, and more, designed for Admin, Staff, and Pharma roles.
 
-First, run the development server:
+## 🌐 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+👉 [Launch Application](https://hospital-software-nine.vercel.app)
+
+---
+
+## 📌 Table of Contents
+
+- [Features](#-features)
+- [Roles & Login](#-roles--login)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Screenshots](#-screenshots)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
+
+---
+
+## ✅ Features
+
+- 🔐 **Clerk Authentication** – Secure, modern user authentication and management.
+- 🧑‍⚕️ **Role-Based Access** – Separate functionalities for Admin, Staff, and Pharma.
+- 👨‍💼 **Admin Dashboard** – Manage users, patients, rooms, bills, and medicines.
+- 🏥 **Patient Management** – Add, view, update, and discharge OPD/inpatient records.
+- 🚪 **Room Allocation** – Manage room availability and allocations.
+- 💵 **Billing System** – Track admission fees, total charges, payments, and balance.
+- 💊 **Pharmacy Module** – Medicine inventory, vendor management, and pharma billing.
+- 📊 **Dashboard Insights** – Visual data on admissions, earnings, and expenses.
+- 💅 **Responsive UI** – Modern, mobile-friendly UI using Tailwind CSS.
+
+---
+
+## 🔐 Roles & Login
+
+> Use the following test credentials to login as different roles:
+
+| Role     | Username | Password |
+|----------|----------|----------|
+| Admin    | `admin`  | `admin`  |
+| Pharma   | `pharma` | `pharma` |
+| Staff    | `staff`  | `staff`  |
+
+Admins can create and manage new users and assign them roles via the admin panel.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js (App Router), React
+- **Styling**: Tailwind CSS
+- **Backend**: Next.js API Routes
+- **ORM**: Prisma
+- **Database**: PostgreSQL
+- **Authentication**: Clerk.dev
+- **Deployment**: Vercel
+
+---
+
+## 📂 Project Structure
+
+
+```
+.
+├── app/              # App router pages and layout
+├── components/       # Reusable components
+├── lib/              # Utility functions and helpers
+├── prisma/           # Prisma schema and migrations
+├── public/           # Static files
+├── styles/           # Tailwind and global styles
+├── .env              # Environment variables
+└── next.config.js    # Next.js config
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📸 Screenshots
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🧑‍💼 Admin Dashboard
+![Admin Dashboard](https://github.com/manojk765/HospitalManagementApp/assets/your-image-path/admin-dashboard.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ➕ Add Patient Page
+![Add Patient](https://github.com/manojk765/HospitalManagementApp/assets/your-image-path/add-patient.png)
 
-## Learn More
+### 💊 Pharma Billing Page
+![Pharma Billing](https://github.com/manojk765/HospitalManagementApp/assets/your-image-path/pharma-billing.png)
 
-To learn more about Next.js, take a look at the following resources:
+## 📦 Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- ✅ Role-based login (Admin, Pharma, Staff)
+- ✅ Secure authentication with Clerk
+- ✅ Add/search patients
+- ✅ Admit/discharge tracking
+- ✅ Billing system (Pharma and Admission)
+- ✅ Expense and revenue tracking
+- ✅ User management (Admins can add/remove users)
+- ✅ Medicine and vendor management
+- ✅ Built with modular and scalable architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👨‍💻 Author
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Koneti Manoj**  
+📧 Email: manojkoneti05@gmail.com  
+🔗 GitHub: [@manojk765](https://github.com/manojk765)
